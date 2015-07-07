@@ -77,7 +77,7 @@ class BaseNode: NSObject, NSCoding, NSCopying {
     @objc(isDraggable)
     var draggable: Bool {
         get {
-            var result = true
+            let result = true
             if (self.urlString as NSString?)?.absolutePath ?? false || self.nodeIcon == nil {
                 return false	// don't allow file system objects to be dragged or special group nodes
             }
@@ -98,7 +98,7 @@ class BaseNode: NSObject, NSCoding, NSCopying {
                 break
             }
             
-            if contains(node.children, {$0 === self}) {
+            if node.children.contains({$0 === self}) {
                 result = node
                 break
             }
@@ -122,7 +122,7 @@ class BaseNode: NSObject, NSCoding, NSCopying {
     // -------------------------------------------------------------------------------
     func removeObjectFromChildren(obj: BaseNode) {
         // remove object from children or the children of any sub-nodes
-        for (index, node) in enumerate(self.children) {
+        for (index, node) in self.children.enumerate() {
             if node === obj {
                 self.children.removeAtIndex(index)
                 return
@@ -238,9 +238,9 @@ class BaseNode: NSObject, NSCoding, NSCopying {
         var reverseIndexes: [Int] = []
         var doc = self
         
-        var parent = doc.parentFromArray(array)
+        let parent = doc.parentFromArray(array)
         while parent != nil {
-            if let index = find(parent!.children, doc) {
+            if let index = parent!.children.indexOf(doc) {
                 reverseIndexes.append(index)
                 doc = parent!
             } else {
@@ -249,7 +249,7 @@ class BaseNode: NSObject, NSCoding, NSCopying {
         }
         
         // If parent is nil, we should just be in the parent array
-        if let index = find(array, doc) {
+        if let index = array.indexOf(doc) {
             reverseIndexes.append(index)
         } else {
             return nil
@@ -297,7 +297,7 @@ class BaseNode: NSObject, NSCoding, NSCopying {
                     var newChildren: [BaseNode] = []
                     
                     for node in dictChildren {
-                        let newNode = self.dynamicType(dictionary: node)
+                        let newNode = self.dynamicType.init(dictionary: node)
                         newChildren.append(newNode)
                     }
                     self.children = newChildren
@@ -335,7 +335,7 @@ class BaseNode: NSObject, NSCoding, NSCopying {
     // -------------------------------------------------------------------------------
     //	initWithCoder:coder
     // -------------------------------------------------------------------------------
-    required convenience init(coder: NSCoder) {
+    required convenience init?(coder: NSCoder) {
         self.init()
         for key in self.mutableKeys {
             self.setValue(coder.decodeObjectForKey(key), forKey: key)
@@ -355,7 +355,7 @@ class BaseNode: NSObject, NSCoding, NSCopying {
     //	copyWithZone:zone
     // -------------------------------------------------------------------------------
     func copyWithZone(zone: NSZone) -> AnyObject {
-        let newNode = self.dynamicType() as BaseNode
+        let newNode = self.dynamicType.init() as BaseNode
         
         for key in self.mutableKeys {
             newNode.setValue(self.valueForKey(key), forKey: key)

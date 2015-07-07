@@ -36,7 +36,7 @@ class FileViewController: NSViewController {
         // listen for changes in the url for this view
         self.addObserver(self,
             forKeyPath: "url",
-            options: .New | .Old,
+            options: [.New, .Old],
             context: nil)
     }
     
@@ -52,9 +52,9 @@ class FileViewController: NSViewController {
     //
     //	Listen for changes in the file url.
     // -------------------------------------------------------------------------------
-    override func observeValueForKeyPath(keyPath: String,
-        ofObject object: AnyObject,
-        change: [NSObject : AnyObject],
+    override func observeValueForKeyPath(keyPath: String?,
+        ofObject object: AnyObject?,
+        change: [NSObject : AnyObject]?,
         context: UnsafeMutablePointer<Void>)
     {
         if let url = self.url, path = url.path {
@@ -65,7 +65,8 @@ class FileViewController: NSViewController {
             let iconImage = NSWorkspace.sharedWorkspace().iconForFile(path)
             iconImage.size = NSMakeSize(64, 64)
             self.fileIcon.image = iconImage
-            if let attr = NSFileManager.defaultManager().attributesOfItemAtPath(path, error: nil) {
+            do {
+                let attr = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
                 // file size
                 let theFileSize = attr[NSFileSize] as! NSNumber
                 self.fileSize.stringValue = "\(theFileSize.stringValue) KB on disk"
@@ -77,6 +78,7 @@ class FileViewController: NSViewController {
                 // mod date
                 let fileModDate = attr[NSFileModificationDate] as! NSDate
                 self.modDate.stringValue = fileModDate.description
+            } catch _ {
             }
             
             // kind string

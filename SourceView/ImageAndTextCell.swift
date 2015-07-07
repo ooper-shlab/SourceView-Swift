@@ -37,7 +37,7 @@ class ImageAndTextCell: NSTextFieldCell {
         self.font = NSFont.systemFontOfSize(NSFont.smallSystemFontSize())
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -46,7 +46,7 @@ class ImageAndTextCell: NSTextFieldCell {
     // -------------------------------------------------------------------------------
     override func copyWithZone(zone: NSZone) -> AnyObject {
         //###copyWithZone() does not work well with Swift ARC
-        var _myImage = self.myImage
+        let _myImage = self.myImage
         self.myImage = nil
         let cell = super.copyWithZone(zone) as! ImageAndTextCell
         cell.myImage = _myImage
@@ -63,7 +63,7 @@ class ImageAndTextCell: NSTextFieldCell {
         var imageFrame: NSRect = NSRect()
         
         let imageSize = self.myImage?.size ?? NSSize()
-        NSDivideRect(cellRect, &imageFrame, &cellRect, 3 + imageSize.width, NSMinXEdge)
+        NSDivideRect(cellRect, &imageFrame, &cellRect, 3 + imageSize.width, NSRectEdge.MinX)
         
         imageFrame.origin.x += kImageOriginXOffset
         imageFrame.origin.y -= kImageOriginYOffset
@@ -105,7 +105,7 @@ class ImageAndTextCell: NSTextFieldCell {
             var imageFrame: NSRect = NSRect()
             
             let imageSize = self.myImage!.size
-            NSDivideRect(newCellFrame, &imageFrame, &newCellFrame, imageSize.width, NSMinXEdge)
+            NSDivideRect(newCellFrame, &imageFrame, &newCellFrame, imageSize.width, NSRectEdge.MinX)
             if self.drawsBackground {
                 self.backgroundColor?.set()
                 NSRectFill(imageFrame)

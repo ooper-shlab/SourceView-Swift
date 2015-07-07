@@ -151,8 +151,8 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
         // load the child edit view controller for later use
         childEditController = ChildEditController(windowNibName: CHILDEDIT_NAME)
         
-        self.window?.setAutorecalculatesContentBorderThickness(true, forEdge: NSMinYEdge)
-        self.window?.setContentBorderThickness(40, forEdge: NSMinYEdge)
+        self.window?.setAutorecalculatesContentBorderThickness(true, forEdge: NSRectEdge.MinY)
+        self.window?.setContentBorderThickness(40, forEdge: NSRectEdge.MinY)
         
         // apply our custom ImageAndTextCell for rendering the first column's cells
         let tableColumn = myOutlineView.tableColumnWithIdentifier(COLUMNID_NAME)!
@@ -181,7 +181,7 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
         menuItem.image = actionImage
         
         // truncate to the middle if the url is too long to fit
-        (urlField.cell() as! NSTextFieldCell).lineBreakMode = .ByTruncatingMiddle
+        (urlField.cell as! NSTextFieldCell).lineBreakMode = .ByTruncatingMiddle
         
         // scroll to the top in case the outline contents is very long
         myOutlineView.enclosingScrollView?.verticalScroller?.floatValue = 0.0
@@ -215,7 +215,7 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
     // -------------------------------------------------------------------------------
     private func selectParentFromSelection() {
         if !treeController.selectedNodes.isEmpty {
-            let firstSelectedNode = treeController.selectedNodes[0] as! NSTreeNode
+            let firstSelectedNode = treeController.selectedNodes[0] as NSTreeNode
             if let parentNode = firstSelectedNode.parentNode {
                 // select the parent
                 let parentIndex = parentNode.indexPath
@@ -454,7 +454,7 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
         self.addChild(NSHomeDirectory(), withName: "Home", selectParent: true)
         
         let appsDirectory = NSSearchPathForDirectoriesInDomains(.ApplicationDirectory, .LocalDomainMask, true)
-        self.addChild(appsDirectory[0] as? String, withName: nil, selectParent: true)
+        self.addChild(appsDirectory[0], withName: nil, selectParent: true)
         
         self.selectParentFromSelection()
     }
@@ -524,7 +524,7 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
                 // only allow for editing http url items or items with out a URL
                 // (this avoids accidentally renaming real file system items)
                 //
-                let firstSelectedNode = treeController.selectedNodes.first! as! NSTreeNode
+                let firstSelectedNode = treeController.selectedNodes.first! as NSTreeNode
                 let node = firstSelectedNode.representedObject as! BaseNode
                 if node.urlString?.isEmpty ?? true || node.urlString!.hasPrefix(HTTP_PREFIX) {
                     enabled = true
@@ -613,7 +613,10 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
                         // detect if the url is a directory
                         var isDirectory: AnyObject? = nil
                         
-                        targetURL?.getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey, error: nil)
+                        do {
+                            try targetURL.getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
+                        } catch _ {
+                        }
                         if isDirectory?.boolValue ?? false {
                             // avoid a flicker effect by not removing the icon view if it is already embedded
                             if currentView !== iconViewController.view {
@@ -660,8 +663,8 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
                 currentView?.frame = currentView!.superview!.frame
                 
                 // make sure our added subview is placed and resizes correctly
-                currentView!.setFrameOrigin(NSMakePoint(0, 0))
-                currentView!.autoresizingMask = .ViewWidthSizable | .ViewHeightSizable
+                currentView?.setFrameOrigin(NSMakePoint(0, 0))
+                currentView?.autoresizingMask = [.ViewWidthSizable, .ViewHeightSizable]
             } else {
                 // there's no url associated with this node
                 // so a container was selected - no view to display
@@ -914,7 +917,7 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
             for i in lazy(0..<count - 1).reverse() {
                 let node = ChildNode()
                 
-                let url = NSURL(fileURLWithPath: fileNames[i])!
+                let url = NSURL(fileURLWithPath: fileNames[i])
                 let name = NSFileManager.defaultManager().displayNameAtPath(url.path!)
                 node.isLeaf = true
                 
@@ -945,14 +948,14 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
                 //
                 // the url might not end with a valid component name, use the best possible title from the URL
                 if url.path!.pathComponents.count == 1 {
-                    if url.absoluteString?.hasPrefix(HTTP_PREFIX) ?? false {
+                    if url.absoluteString.hasPrefix(HTTP_PREFIX) ?? false {
                         // use the url portion without the prefix
-                        let prefixRange = url.absoluteString!.rangeOfString(HTTP_PREFIX)!
-                        let newRange = prefixRange.endIndex..<url.absoluteString!.endIndex
-                        node.nodeTitle = url.absoluteString![newRange]
+                        let prefixRange = url.absoluteString.rangeOfString(HTTP_PREFIX)!
+                        let newRange = prefixRange.endIndex..<url.absoluteString.endIndex
+                       node.nodeTitle = url.absoluteString[newRange]
                     } else {
                         // prefix unknown, just use the url as its title
-                        node.nodeTitle = url.absoluteString!
+                        node.nodeTitle = url.absoluteString
                     }
                 } else {
                     // use the last portion of the URL as its title
@@ -1045,9 +1048,9 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
     // -------------------------------------------------------------------------------
     func splitView(sender: NSSplitView, resizeSubviewsWithOldSize oldSize: NSSize) {
         let newFrame = sender.frame // get the new size of the whole splitView
-        let left = sender.subviews[0] as! NSView
+        let left = sender.subviews[0] as NSView
         var leftFrame = left.frame
-        let right = sender.subviews[1] as! NSView
+        let right = sender.subviews[1] as NSView
         var rightFrame = right.frame
         
         let dividerThickness = sender.dividerThickness

@@ -51,7 +51,7 @@ class IconViewController: NSViewController {
         //###Neither the receiver, nor anObserver, are retained.
         self.addObserver(self,
             forKeyPath: "url",
-            options: (.New | .Old),
+            options: ([.New, .Old]),
             context: nil)
     }
     
@@ -83,29 +83,27 @@ class IconViewController: NSViewController {
         var contentArray: [AnyObject] = []
         autoreleasepool {
             
-            if let fileURLs = NSFileManager.defaultManager().contentsOfDirectoryAtURL(self.url!,
-                includingPropertiesForKeys: [],
-                options: nil,
-                error: nil) as? [NSURL] {
-                    for element in fileURLs {
-                        var elementNameStr: AnyObject? = nil
-                        let elementIcon = NSWorkspace.sharedWorkspace().iconForFile(element.path!)
-                        
-                        // only allow visible objects
-                        var hiddenFlag: AnyObject? = nil
-                        if element.getResourceValue(&hiddenFlag, forKey: NSURLIsHiddenKey, error: nil) {
-                            if !(hiddenFlag as! Bool) {
-                                if element.getResourceValue(&elementNameStr, forKey: NSURLNameKey, error: nil) {
-                                    // file system object is visible so add to our array
-                                    contentArray.append([
-                                        "icon": elementIcon,
-                                        "name": elementNameStr as! String
-                                        ])
-                                }
-                            }
-                        }
+            do {
+                let fileURLs = try NSFileManager.defaultManager().contentsOfDirectoryAtURL(self.url!,
+                    includingPropertiesForKeys: [],
+                    options: [])
+                for element in fileURLs {
+                    var elementNameStr: AnyObject? = nil
+                    let elementIcon = NSWorkspace.sharedWorkspace().iconForFile(element.path!)
+                    
+                    // only allow visible objects
+                    var hiddenFlag: AnyObject? = nil
+                    try element.getResourceValue(&hiddenFlag, forKey: NSURLIsHiddenKey)
+                    if !(hiddenFlag as! Bool) {
+                        try element.getResourceValue(&elementNameStr, forKey: NSURLNameKey)
+                        // file system object is visible so add to our array
+                        contentArray.append([
+                            "icon": elementIcon,
+                            "name": elementNameStr as! String
+                        ])
                     }
-            }
+                }
+            } catch _ {}
             
             // call back on the main thread to update the icons in our view
             dispatch_sync(dispatch_get_main_queue()) {
@@ -120,9 +118,9 @@ class IconViewController: NSViewController {
     //	Listen for changes in the file url.
     //	Given a url, obtain its contents and add only the invisible items to the collection.
     // -------------------------------------------------------------------------------
-    override func observeValueForKeyPath(keyPath: String,
-        ofObject object: AnyObject,
-        change: [NSObject: AnyObject],
+    override func observeValueForKeyPath(keyPath: String?,
+        ofObject object: AnyObject?,
+        change: [NSObject: AnyObject]?,
         context: UnsafeMutablePointer<Void>)
     {
         // build our directory contents on a separate thread,
