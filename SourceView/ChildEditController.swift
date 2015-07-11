@@ -75,7 +75,7 @@ class ChildEditController: NSWindowController {
     // -------------------------------------------------------------------------------
     //	done:sender
     // -------------------------------------------------------------------------------
-    @IBAction func done(AnyObject) {
+    @IBAction func done(_: AnyObject) {
         let urlStr: String
         if !urlField.stringValue.hasPrefix("http://") {
             urlStr = "http://\(urlField.stringValue)"
@@ -93,7 +93,7 @@ class ChildEditController: NSWindowController {
     // -------------------------------------------------------------------------------
     //	cancel:sender
     // -------------------------------------------------------------------------------
-    @IBAction func cancel(AnyObject) {
+    @IBAction func cancel(_: AnyObject) {
         NSApp.stopModal()
         cancelled = true
     }

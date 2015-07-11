@@ -272,7 +272,7 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
     // -------------------------------------------------------------------------------
     //	addFolderAction:sender:
     // -------------------------------------------------------------------------------
-    @IBAction func addFolderAction(AnyObject) {
+    @IBAction func addFolderAction(_: AnyObject) {
         self.addFolder(UNTITLED_NAME)
     }
     
@@ -340,7 +340,7 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
     // -------------------------------------------------------------------------------
     //	addBookmarkAction:sender
     // -------------------------------------------------------------------------------
-    @IBAction func addBookmarkAction(AnyObject) {
+    @IBAction func addBookmarkAction(_: AnyObject) {
         // ask our edit sheet for information on the new child to be added
         let newValues = childEditController.edit(nil, from: self)
         
@@ -355,7 +355,7 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
     // -------------------------------------------------------------------------------
     //	editChildAction:sender
     // -------------------------------------------------------------------------------
-    @IBAction func editBookmarkAction(AnyObject) {
+    @IBAction func editBookmarkAction(_: AnyObject) {
         let indexPath = treeController.selectionIndexPath
         
         // get the selected item's name and url
