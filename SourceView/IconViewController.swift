@@ -120,7 +120,7 @@ class IconViewController: NSViewController {
     // -------------------------------------------------------------------------------
     override func observeValueForKeyPath(keyPath: String?,
         ofObject object: AnyObject?,
-        change: [NSObject: AnyObject]?,
+        change: [String : AnyObject]?,
         context: UnsafeMutablePointer<Void>)
     {
         // build our directory contents on a separate thread,

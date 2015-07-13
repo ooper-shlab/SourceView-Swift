@@ -54,7 +54,7 @@ class FileViewController: NSViewController {
     // -------------------------------------------------------------------------------
     override func observeValueForKeyPath(keyPath: String?,
         ofObject object: AnyObject?,
-        change: [NSObject : AnyObject]?,
+        change: [String : AnyObject]?,
         context: UnsafeMutablePointer<Void>)
     {
         if let url = self.url, path = url.path {

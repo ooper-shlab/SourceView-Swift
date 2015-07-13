@@ -80,7 +80,8 @@ class TreeAdditionObj: NSObject {
 //MARK: -
 
 @objc(MyWindowController)
-class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitViewDelegate {
+class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitViewDelegate,
+        WebFrameLoadDelegate, WebUIDelegate {
     @IBOutlet private var myOutlineView: NSOutlineView!
     @IBOutlet private var treeController: NSTreeController!
     @IBOutlet private var placeHolderView: NSView!
@@ -488,7 +489,7 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
     //	JavaScript code thatt focus their text fields as we target the web view with a particular URL.
     //
     // -------------------------------------------------------------------------------
-    override func webView(sender: WebView!, makeFirstResponder responder: NSResponder!) {
+    func webView(sender: WebView!, makeFirstResponder responder: NSResponder!) {
         if retargetWebView {
             // we are targeting the webview ourselves as a result of the user clicking
             // a url in our outlineview: don't do anything, but reset our target check flag
@@ -503,7 +504,7 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
     // -------------------------------------------------------------------------------
     //	didFailProvisionalLoadWithError
     // -------------------------------------------------------------------------------
-    override func webView(sender: WebView!, didFailProvisionalLoadWithError error: NSError!, forFrame frame: WebFrame!) {
+    func webView(sender: WebView!, didFailProvisionalLoadWithError error: NSError!, forFrame frame: WebFrame!) {
         // the URL failed to load in our web view, remove the detail view
         self.removeSubview()
         currentView = nil
