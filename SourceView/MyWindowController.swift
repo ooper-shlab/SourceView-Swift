@@ -948,7 +948,7 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
                 // url is non-file based (probably from Safari)
                 //
                 // the url might not end with a valid component name, use the best possible title from the URL
-                if url.path!.pathComponents.count == 1 {
+                if url.pathComponents!.count == 1 {
                     if url.absoluteString.hasPrefix(HTTP_PREFIX) ?? false {
                         // use the url portion without the prefix
                         let prefixRange = url.absoluteString.rangeOfString(HTTP_PREFIX)!
@@ -960,7 +960,7 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
                     }
                 } else {
                     // use the last portion of the URL as its title
-                    node.nodeTitle = url.path!.lastPathComponent
+                    node.nodeTitle = url.lastPathComponent!
                 }
                 
                 node.urlString = url.absoluteString
