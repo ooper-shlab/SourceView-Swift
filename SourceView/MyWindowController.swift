@@ -870,7 +870,7 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
         let urlArray = pbArray[0] as! [String]
         let nameArray = pbArray[1] as! [String]
         
-        for i in lazy(0..<urlArray.count).reverse() {
+        for i in (0..<urlArray.count).reverse() {
             let node = ChildNode()
             
             node.isLeaf = true
@@ -893,7 +893,7 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
         let newNodes = self.dragNodesArray
         
         // move the items to their new place (we do this backwards, otherwise they will end up in reverse order)
-        for idx in lazy(0..<newNodes.count).reverse() {
+        for idx in (0..<newNodes.count).reverse() {
             treeController.moveNode(newNodes[idx], toIndexPath: indexPath)
         }
         
@@ -915,7 +915,7 @@ class MyWindowController: NSWindowController, NSOutlineViewDelegate, NSSplitView
         if !fileNames.isEmpty {
             let count = fileNames.count
             
-            for i in lazy(0..<count - 1).reverse() {
+            for i in (0..<count - 1).reverse() {
                 let node = ChildNode()
                 
                 let url = NSURL(fileURLWithPath: fileNames[i])

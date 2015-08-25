@@ -256,7 +256,7 @@ class BaseNode: NSObject, NSCoding, NSCopying {
         }
         
         // now build the index path
-        for indexNumber in lazy(reverseIndexes).reverse() {
+        for indexNumber in reverseIndexes.lazy.reverse() {
             if indexPath == nil {
                 indexPath = NSIndexPath(index: indexNumber)
             } else {
