@@ -62,6 +62,48 @@ class BaseNode: NSObject, NSCoding, NSCopying {
     }
     
     // -------------------------------------------------------------------------------
+    //	isBookmark
+    // -------------------------------------------------------------------------------
+    var isBookmark: Bool {
+        get {
+            
+            return self.urlString?.hasPrefix("http://") ?? false
+        }
+        
+        // -------------------------------------------------------------------------------
+        //	setIsBookmark:isBookmark
+        // -------------------------------------------------------------------------------
+        set {
+            //### ignore
+        }
+    }
+    
+    // -------------------------------------------------------------------------------
+    //	isDirectory
+    // -------------------------------------------------------------------------------
+    var isDirectory: Bool {
+        get {
+            var directory = false
+            
+            if let urlString = self.urlString {
+                var isURLDirectory: AnyObject? = nil
+                let url = NSURL(fileURLWithPath: urlString)
+                
+                _ = try? url.getResourceValue(&isURLDirectory, forKey: NSURLIsDirectoryKey)
+                
+                directory = (isURLDirectory as? NSNumber)?.boolValue ?? false
+            }
+            
+            return directory
+        }
+        
+        // -------------------------------------------------------------------------------
+        //	setIsBookmark:isBookmark
+        // -------------------------------------------------------------------------------
+        //###ignore
+    }
+    
+    // -------------------------------------------------------------------------------
     //	compare:aNode
     // -------------------------------------------------------------------------------
     func compare(aNode: BaseNode) -> NSComparisonResult {
@@ -70,49 +112,6 @@ class BaseNode: NSObject, NSCoding, NSCopying {
     
     
     //MARK: - Drag and Drop
-    
-    // -------------------------------------------------------------------------------
-    //	isDraggable
-    // -------------------------------------------------------------------------------
-    @objc(isDraggable)
-    var draggable: Bool {
-        get {
-            let result = true
-            if (self.urlString as NSString?)?.absolutePath ?? false || self.nodeIcon == nil {
-                return false	// don't allow file system objects to be dragged or special group nodes
-            }
-            return result
-        }
-    }
-    
-    // -------------------------------------------------------------------------------
-    //	parentFromArray:array
-    //
-    //	Finds the receiver's parent from the nodes contained in the array.
-    // -------------------------------------------------------------------------------
-    func parentFromArray(array: [BaseNode]) -> BaseNode? {
-        var result: BaseNode? = nil
-        
-        for node in array {
-            if node === self {	// If we are in the root array, return nil
-                break
-            }
-            
-            if node.children.contains({$0 === self}) {
-                result = node
-                break
-            }
-            
-            if !node.isLeaf {
-                if let innerNode = self.parentFromArray(node.children) {
-                    result = innerNode
-                    break
-                }
-            }
-        }
-        
-        return result
-    }
     
     // -------------------------------------------------------------------------------
     //	removeObjectFromChildren:obj
@@ -228,45 +227,6 @@ class BaseNode: NSObject, NSCoding, NSCopying {
         return false
     }
     
-    // -------------------------------------------------------------------------------
-    //	indexPathInArray:array
-    //
-    //	Returns the index path of within the given array, useful for drag and drop.
-    // -------------------------------------------------------------------------------
-    func indexPathInArray(array: [BaseNode]) -> NSIndexPath? {
-        var indexPath: NSIndexPath? = nil
-        var reverseIndexes: [Int] = []
-        var doc = self
-        
-        let parent = doc.parentFromArray(array)
-        while parent != nil {
-            if let index = parent!.children.indexOf(doc) {
-                reverseIndexes.append(index)
-                doc = parent!
-            } else {
-                return nil
-            }
-        }
-        
-        // If parent is nil, we should just be in the parent array
-        if let index = array.indexOf(doc) {
-            reverseIndexes.append(index)
-        } else {
-            return nil
-        }
-        
-        // now build the index path
-        for indexNumber in reverseIndexes.lazy.reverse() {
-            if indexPath == nil {
-                indexPath = NSIndexPath(index: indexNumber)
-            } else {
-                indexPath = indexPath!.indexPathByAddingIndex(indexNumber)
-            }
-        }
-        
-        return indexPath
-    }
-    
     
     //MARK: - Archiving And Copying Support
     
@@ -280,7 +240,8 @@ class BaseNode: NSObject, NSCoding, NSCopying {
             "isLeaf",		// isLeaf MUST come before children for initWithDictionary: to work
             "children",
             "nodeIcon",
-            "urlString"]
+            "urlString",
+            "isBookmark"]
     }
     
     // -------------------------------------------------------------------------------

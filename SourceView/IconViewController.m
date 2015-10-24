@@ -3,7 +3,7 @@
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
- Controller object for our icon collection view.
+ View controller object to host the icon collection view.
  */
 
 #import "IconViewController.h"
@@ -86,20 +86,20 @@ NSString *kReceivedContentNotification = @"ReceivedContentNotification";
                                                           includingPropertiesForKeys:@[]
                                                                              options:0
                                                                         error:nil];
-        if (fileURLs)
+        if (fileURLs != nil)
         {
             for (NSURL *element in fileURLs)
             {
-                NSString *elementNameStr = nil;
-                NSImage *elementIcon = [[NSWorkspace sharedWorkspace] iconForFile:[element path]];
+                NSImage *elementIcon = [[NSWorkspace sharedWorkspace] iconForFile:element.path];
 
                 // only allow visible objects
                 NSNumber *hiddenFlag = nil;
                 if ([element getResourceValue:&hiddenFlag forKey:NSURLIsHiddenKey error:nil])
                 {
-                    if (![hiddenFlag boolValue])
+                    if (!hiddenFlag.boolValue)
                     {
-                        if ([element getResourceValue:&elementNameStr forKey:NSURLNameKey error:nil])
+                        NSString *elementNameStr = nil;
+                        if ([element getResourceValue:&elementNameStr forKey:NSURLLocalizedNameKey error:nil])
                         {
                             // file system object is visible so add to our array
                             [contentArray addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:

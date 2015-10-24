@@ -6,8 +6,6 @@
  Generic multi-use node object used with NSOutlineView and NSTreeController.
  */
 
-#import <Cocoa/Cocoa.h>
-
 @interface BaseNode : NSObject <NSCoding, NSCopying>
 
 @property (strong) NSString *nodeTitle;
@@ -15,6 +13,8 @@
 @property (strong) NSMutableArray *children;
 @property (strong) NSString *urlString;
 @property (assign) BOOL isLeaf;
+@property (assign) BOOL isBookmark;
+@property (assign) BOOL isDirectory;
 
 - (instancetype)initLeaf;
 
@@ -27,13 +27,11 @@
 - (NSDictionary *)dictionaryRepresentation;
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 
-- (id)parentFromArray:(NSArray *)array;
 - (void)removeObjectFromChildren:(id)obj;
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSArray *descendants;
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSArray *allChildLeafs;
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSArray *groupChildren;
 - (BOOL)isDescendantOfOrOneOfNodes:(NSArray *)nodes;
 - (BOOL)isDescendantOfNodes:(NSArray *)nodes;
-- (NSIndexPath *)indexPathInArray:(NSArray *)array;
 
 @end

@@ -3,9 +3,9 @@
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
- The sample's application delegate object (NSApplicationDelegate)
+ Custom view to draw a separator
  */
 
-@interface AppDelegate : NSObject <NSApplicationDelegate>
+@interface SeparatorView : NSView
 
 @end

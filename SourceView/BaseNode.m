@@ -20,7 +20,7 @@
 	{
         self.nodeTitle = @"BaseNode Untitled";
         
-		[self setChildren:[NSMutableArray array]];
+		self.children = [NSMutableArray array];
 		[self setLeaf:NO];	// is container by default
 	}
 	return self;
@@ -47,12 +47,56 @@
 	_isLeaf = flag;
 	if (_isLeaf)
     {
-		[self setChildren:[NSMutableArray arrayWithObject:self]];
+		self.children = [NSMutableArray arrayWithObject:self];
     }
 	else
     {
-		[self setChildren:[NSMutableArray array]];
+		self.children = [NSMutableArray array];
     }
+}
+
+// -------------------------------------------------------------------------------
+//	isBookmark
+// -------------------------------------------------------------------------------
+- (BOOL)isBookmark
+{
+    return [self.urlString hasPrefix:@"http://"];
+}
+
+// -------------------------------------------------------------------------------
+//	setIsBookmark:isBookmark
+// -------------------------------------------------------------------------------
+- (void)setIsBookmark:(BOOL)isBookmark
+{
+    self.isBookmark = isBookmark;
+}
+
+// -------------------------------------------------------------------------------
+//	isDirectory
+// -------------------------------------------------------------------------------
+- (BOOL)isDirectory
+{
+    BOOL isDirectory = NO;
+    
+    if (self.urlString != nil)
+    {
+        NSNumber *isURLDirectory = nil;
+        NSURL *url = [NSURL fileURLWithPath:self.urlString];
+    
+        [url getResourceValue:&isURLDirectory forKey:NSURLIsDirectoryKey error:nil];
+    
+        isDirectory = isURLDirectory.boolValue;
+    }
+    
+    return isDirectory;
+}
+
+// -------------------------------------------------------------------------------
+//	setIsBookmark:isBookmark
+// -------------------------------------------------------------------------------
+- (void)setIsDirectory:(BOOL)isDirectory
+{
+    self.isDirectory = isDirectory;
 }
 
 // -------------------------------------------------------------------------------
@@ -60,58 +104,11 @@
 // -------------------------------------------------------------------------------
 - (NSComparisonResult)compare:(BaseNode *)aNode
 {
-	return [[[self nodeTitle] lowercaseString] compare:[[aNode nodeTitle] lowercaseString]];
+	return [self.nodeTitle.lowercaseString compare:aNode.nodeTitle.lowercaseString];
 }
 
 
 #pragma mark - Drag and Drop
-
-// -------------------------------------------------------------------------------
-//	isDraggable
-// -------------------------------------------------------------------------------
-- (BOOL)isDraggable
-{
-	BOOL result = YES;
-	if ([[self urlString] isAbsolutePath] || [self nodeIcon] == nil)
-    {
-		result = NO;	// don't allow file system objects to be dragged or special group nodes
-    }
-	return result;
-}
-
-// -------------------------------------------------------------------------------
-//	parentFromArray:array
-//
-//	Finds the receiver's parent from the nodes contained in the array.
-// -------------------------------------------------------------------------------
-- (id)parentFromArray:(NSArray *)array
-{
-	id result = nil;
-	
-	for (id node in array)
-	{
-		if (node == self)	// If we are in the root array, return nil
-			break;
-		
-		if ([[node children] indexOfObjectIdenticalTo:self] != NSNotFound)
-        {
-            result = node;
-            break;
-        }
-            
-		if (![node isLeaf])
-		{
-			id innerNode = [self parentFromArray:[node children]];
-			if (innerNode)
-			{
-				result = innerNode;
-				break;
-			}
-		}
-	}
-    
-	return result;
-}
 
 // -------------------------------------------------------------------------------
 //	removeObjectFromChildren:obj
@@ -131,7 +128,9 @@
 		}
 		
 		if (![node isLeaf])
+        {
 			[node removeObjectFromChildren:obj];
+        }
 	}
 }
 
@@ -149,7 +148,9 @@
 		[descendants addObject:node];
 		
 		if (![node isLeaf])
+        {
 			[descendants addObjectsFromArray:[node descendants]];	// Recursive - will go down the chain to get all
+        }
 	}
 	return descendants;
 }
@@ -168,9 +169,13 @@
 	for (node in self.children)
 	{
 		if ([node isLeaf])
+        {
 			[childLeafs addObject:node];
+        }
 		else
+        {
 			[childLeafs addObjectsFromArray:[node allChildLeafs]];	// Recursive - will go down the chain to get all
+        }
 	}
 	return childLeafs;
 }
@@ -187,8 +192,10 @@
 	
 	for (child in self.children)
 	{
-		if (![child isLeaf])
+		if (!child.isLeaf)
+        {
 			[groupChildren addObject:child];
+        }
 	}
 	return groupChildren;
 }
@@ -240,54 +247,6 @@
 	return NO;
 }
 
-// -------------------------------------------------------------------------------
-//	indexPathInArray:array
-//
-//	Returns the index path of within the given array, useful for drag and drop.
-// -------------------------------------------------------------------------------
-- (NSIndexPath *)indexPathInArray:(NSArray *)array
-{
-	NSIndexPath	*indexPath = nil;
-	NSMutableArray *reverseIndexes = [NSMutableArray array];
-	id parent, doc = self;
-	NSInteger index;
-	
-	parent = [doc parentFromArray:array];
-    while (parent)
-	{
-		index = [[parent children] indexOfObjectIdenticalTo:doc];
-		if (index == NSNotFound)
-        {
-			return nil;
-        }
-		
-		[reverseIndexes addObject:@(index)];
-		doc = parent;
-	}
-	
-	// If parent is nil, we should just be in the parent array
-	index = [array indexOfObjectIdenticalTo:doc];
-	if (index == NSNotFound)
-    {
-		return nil;
-    }
-    
-	[reverseIndexes addObject:@(index)];
-	
-	// now build the index path
-    NSEnumerator *re = [reverseIndexes reverseObjectEnumerator];
-    NSNumber *indexNumber;
-    for (indexNumber in re)
-    {
-        if (indexPath == nil)
-            indexPath = [NSIndexPath indexPathWithIndex:[indexNumber intValue]];
-        else
-            indexPath = [indexPath indexPathByAddingIndex:[indexNumber intValue]];
-    }
-	
-	return indexPath;
-}
-
 
 #pragma mark - Archiving And Copying Support
 
@@ -298,11 +257,12 @@
 // -------------------------------------------------------------------------------
 - (NSArray *)mutableKeys
 {
-	return @[@"nodeTitle",
+	return @[   @"nodeTitle",
                 @"isLeaf",		// isLeaf MUST come before children for initWithDictionary: to work
                 @"children", 
                 @"nodeIcon",
-                @"urlString"];
+                @"urlString",
+                @"isBookmark"];
 }
 
 // -------------------------------------------------------------------------------
@@ -314,12 +274,12 @@
     if (self != nil)
     {
         NSString *key;
-        for (key in [self mutableKeys])
+        for (key in self.mutableKeys)
         {
             if ([key isEqualToString:@"children"])
             {
                 if ([dictionary[@"isLeaf"] boolValue])
-                    [self setChildren:[NSMutableArray arrayWithObject:self]];
+                    self.children = [NSMutableArray arrayWithObject:self];
                 else
                 {
                     NSArray *dictChildren = dictionary[key];
@@ -330,7 +290,7 @@
                         id newNode = [[[self class] alloc] initWithDictionary:node];
                         [newChildren addObject:newNode];
                     }
-                    [self setChildren:newChildren];
+                    self.children = newChildren;
                 }
             }
             else
@@ -349,7 +309,7 @@
 {
 	NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
 
-	for (NSString *key in [self mutableKeys])
+	for (NSString *key in self.mutableKeys)
     {
 		// convert all children to dictionaries
 		if ([key isEqualToString:@"children"])
@@ -381,7 +341,7 @@
 	self = [self init];
 	if (self != nil)
     {
-        for (NSString *key in [self mutableKeys])
+        for (NSString *key in self.mutableKeys)
             [self setValue:[coder decodeObjectForKey:key] forKey:key];
 	}
 	return self;
@@ -392,7 +352,7 @@
 // -------------------------------------------------------------------------------
 - (void)encodeWithCoder:(NSCoder *)coder
 {
-    for (NSString *key in [self mutableKeys])
+    for (NSString *key in self.mutableKeys)
     {
 		[coder encodeObject:[self valueForKey:key] forKey:key];
     }
@@ -405,7 +365,7 @@
 {
 	id newNode = [[[self class] allocWithZone:zone] init];
 	
-	for (NSString *key in [self mutableKeys])
+	for (NSString *key in self.mutableKeys)
     {
 		[newNode setValue:[self valueForKey:key] forKey:key];
     }

@@ -3,10 +3,9 @@
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
- Subclass of NSActionCell which displays a separator line.
+ View controller managing our split view interface
  */
 
-#import <Cocoa/Cocoa.h>
+@interface MySplitViewController : NSSplitViewController
 
-@interface SeparatorCell : NSTextFieldCell
 @end

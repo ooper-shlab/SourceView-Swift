@@ -10,7 +10,7 @@
  See LICENSE.txt for this sample’s licensing information
 
  Abstract:
- Controller object for our icon collection view.
+ View controller object to host the icon collection view.
  */
 
 import Cocoa
@@ -24,6 +24,7 @@ private let KEY_ICON = "icon"
 
 // notification for indicating file system content has been received
 
+@objc(IconViewBox)
 class IconViewBox: NSBox {
     override func hitTest(aPoint: NSPoint) -> NSView? {
         // don't allow any mouse clicks for subviews in this NSBox
@@ -51,7 +52,7 @@ class IconViewController: NSViewController {
         //###Neither the receiver, nor anObserver, are retained.
         self.addObserver(self,
             forKeyPath: "url",
-            options: ([.New, .Old]),
+            options: [.New, .Old],
             context: nil)
     }
     
@@ -88,19 +89,19 @@ class IconViewController: NSViewController {
                     includingPropertiesForKeys: [],
                     options: [])
                 for element in fileURLs {
-                    var elementNameStr: AnyObject? = nil
                     let elementIcon = NSWorkspace.sharedWorkspace().iconForFile(element.path!)
                     
                     // only allow visible objects
                     var hiddenFlag: AnyObject? = nil
                     try element.getResourceValue(&hiddenFlag, forKey: NSURLIsHiddenKey)
                     if !(hiddenFlag as! Bool) {
-                        try element.getResourceValue(&elementNameStr, forKey: NSURLNameKey)
+                        var elementNameStr: AnyObject? = nil
+                        try element.getResourceValue(&elementNameStr, forKey: NSURLLocalizedNameKey)
                         // file system object is visible so add to our array
                         contentArray.append([
                             "icon": elementIcon,
                             "name": elementNameStr as! String
-                        ])
+                            ])
                     }
                 }
             } catch _ {}

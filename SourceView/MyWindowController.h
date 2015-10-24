@@ -3,10 +3,8 @@
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
- Interface for MyWindowController class, the main controller class for this sample.
+ The primary or main window controller class for this sample.
  */
-
-#import <Cocoa/Cocoa.h>
 
 @interface MyWindowController : NSWindowController
 

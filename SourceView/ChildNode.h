@@ -6,8 +6,6 @@
  Generic child node object used with NSOutlineView and NSTreeController.
  */
 
-#import <Cocoa/Cocoa.h>
-
 #import "BaseNode.h"
 
 @interface ChildNode : BaseNode

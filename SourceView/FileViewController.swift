@@ -10,7 +10,7 @@
  See LICENSE.txt for this sample’s licensing information
 
  Abstract:
- Controller object for our file view.
+ View controller object to host the UI for file information
  */
 
 import Cocoa

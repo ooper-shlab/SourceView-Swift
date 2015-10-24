@@ -11,7 +11,7 @@
 @implementation ChildNode
 
 // -------------------------------------------------------------------------------
-//	init:
+//	init
 // -------------------------------------------------------------------------------
 - (instancetype)init
 {
@@ -24,13 +24,13 @@
 }
 
 // -------------------------------------------------------------------------------
-//	mutableKeys:
+//	mutableKeys
 //
 //	Maintain support for archiving and copying.
 // -------------------------------------------------------------------------------
 - (NSArray *)mutableKeys
 {
-    return [[super mutableKeys] arrayByAddingObjectsFromArray:@[@"description"]];
+    return [super.mutableKeys arrayByAddingObjectsFromArray:@[@"description"]];
 }
 
 @end

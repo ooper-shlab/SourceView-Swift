@@ -3,7 +3,7 @@
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
- Controller object for our file view.
+ View controller object to host the UI for file information
  */
 
 #import "FileViewController.h"
@@ -54,27 +54,27 @@
 								context:(void *)context
 {
 	// name
-	[self.fileName setStringValue:[[NSFileManager defaultManager] displayNameAtPath:[self.url path]]];
+	(self.fileName).stringValue = [[NSFileManager defaultManager] displayNameAtPath:(self.url).path];
 	
 	// icon
-	NSImage *iconImage = [[NSWorkspace sharedWorkspace] iconForFile:[self.url path]];
-	[iconImage setSize:NSMakeSize(64,64)];
-	[self.fileIcon setImage:iconImage];
+	NSImage *iconImage = [[NSWorkspace sharedWorkspace] iconForFile:(self.url).path];
+	iconImage.size = NSMakeSize(64,64);
+	(self.fileIcon).image = iconImage;
 	
-	NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:[self.url path] error:nil];
+	NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:(self.url).path error:nil];
 	if (attr)
 	{
 		// file size
 		NSNumber *theFileSize = attr[NSFileSize];
-        [self.fileSize setStringValue:[NSString stringWithFormat:@"%@ KB on disk", [theFileSize stringValue]]];
+        (self.fileSize).stringValue = [NSString stringWithFormat:@"%@ KB on disk", theFileSize.stringValue];
 		
 		// creation date
 		NSDate *fileCreationDate = attr[NSFileCreationDate];
-        [self.creationDate setStringValue:[fileCreationDate description]];
+        (self.creationDate).stringValue = fileCreationDate.description;
 				
 		// mod date
 		NSDate *fileModDate = attr[NSFileModificationDate];
-        [self.modDate setStringValue:[fileModDate description]];	
+        (self.modDate).stringValue = fileModDate.description;	
 	}
 
 	// kind string
@@ -82,7 +82,7 @@
 	LSCopyKindStringForURL((__bridge CFURLRef)self.url, &kindStr);
 	if (kindStr !=  nil)
 	{
-		[self.fileKindString setStringValue:(__bridge NSString *)kindStr];
+		(self.fileKindString).stringValue = (__bridge NSString *)kindStr;
 		CFRelease(kindStr);
 	}
 }

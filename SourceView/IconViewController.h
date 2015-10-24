@@ -3,10 +3,8 @@
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
- Controller object for our icon collection view.
+ View controller object to host the icon collection view.
  */
-
-#import <Cocoa/Cocoa.h>
 
 // notification for indicating file system content has been received
 extern NSString *kReceivedContentNotification;
