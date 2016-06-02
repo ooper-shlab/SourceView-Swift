@@ -6,7 +6,7 @@
 //
 //
 /*
- Copyright (C) 2015 Apple Inc. All Rights Reserved.
+ Copyright (C) 2016 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
 
  Abstract:
@@ -15,14 +15,21 @@
 
 import Cocoa
 
+private let kIconImageSize: CGFloat = 16.0
+private let PLACES_NAME = "PLACES"
+private let BOOKMARKS_NAME = "BOOKMARKS"
+
+
 @objc(BaseNode)
 class BaseNode: NSObject, NSCoding, NSCopying {
     
     dynamic var nodeTitle: String
-    dynamic var nodeIcon: NSImage?
+    //dynamic var nodeIcon: NSImage?
     private var _children: [BaseNode] = []
-    dynamic var urlString: String?
+    dynamic var url: NSURL?
     dynamic var isLeaf: Bool = false	// is container by default
+    private var _isBookmark: Bool = false
+    private var _isDirectory: Bool = false
     
     // -------------------------------------------------------------------------------
     //	init
@@ -31,6 +38,20 @@ class BaseNode: NSObject, NSCoding, NSCopying {
         self.nodeTitle = "BaseNode Untitled"
         super.init()
     }
+    
+    // -------------------------------------------------------------------------------
+    //	description
+    // -------------------------------------------------------------------------------
+    override class func description() -> String {
+        return "BaseNode"
+    }
+    
+    // -------------------------------------------------------------------------------
+    //	String constants
+    // -------------------------------------------------------------------------------
+    static let placesName = "PLACES"
+    static let bookmarksName = "BOOKMARKS"
+    static let untitledName = "Untitled" // default name for added folders and leafs
     
     // -------------------------------------------------------------------------------
     //	initLeaf
@@ -66,15 +87,18 @@ class BaseNode: NSObject, NSCoding, NSCopying {
     // -------------------------------------------------------------------------------
     var isBookmark: Bool {
         get {
-            
-            return self.urlString?.hasPrefix("http://") ?? false
+            let isBookmark = false
+            if let url = self.url {
+                return !url.fileURL
+            }
+            return isBookmark
         }
         
         // -------------------------------------------------------------------------------
         //	setIsBookmark:isBookmark
         // -------------------------------------------------------------------------------
         set {
-            //### ignore
+            self._isBookmark = newValue
         }
     }
     
@@ -85,12 +109,9 @@ class BaseNode: NSObject, NSCoding, NSCopying {
         get {
             var directory = false
             
-            if let urlString = self.urlString {
+            if let url = self.url {
                 var isURLDirectory: AnyObject? = nil
-                let url = NSURL(fileURLWithPath: urlString)
-                
                 _ = try? url.getResourceValue(&isURLDirectory, forKey: NSURLIsDirectoryKey)
-                
                 directory = (isURLDirectory as? NSNumber)?.boolValue ?? false
             }
             
@@ -100,7 +121,9 @@ class BaseNode: NSObject, NSCoding, NSCopying {
         // -------------------------------------------------------------------------------
         //	setIsBookmark:isBookmark
         // -------------------------------------------------------------------------------
-        //###ignore
+        set {
+            self._isDirectory = newValue
+        }
     }
     
     // -------------------------------------------------------------------------------
@@ -108,6 +131,50 @@ class BaseNode: NSObject, NSCoding, NSCopying {
     // -------------------------------------------------------------------------------
     func compare(aNode: BaseNode) -> NSComparisonResult {
         return (self.nodeTitle.lowercaseString as NSString).compare(aNode.nodeTitle.lowercaseString)
+    }
+    
+    // -------------------------------------------------------------------------------
+    //	isSpecialGroup
+    // -------------------------------------------------------------------------------
+    var isSpecialGroup: Bool {
+        return (self.nodeTitle == BOOKMARKS_NAME || self.nodeTitle == PLACES_NAME)
+    }
+    
+    // -------------------------------------------------------------------------------
+    //	isSeparator
+    // -------------------------------------------------------------------------------
+    var isSeparator: Bool {
+        return (self.nodeIcon == nil && self.nodeTitle.isEmpty)
+    }
+    
+    // -------------------------------------------------------------------------------
+    //	nodeIcon
+    // -------------------------------------------------------------------------------
+    var nodeIcon: NSImage? {
+        var icon: NSImage? = nil
+        if self.isLeaf {
+            // does it have a URL string?
+            if let url = self.url {
+                if self.isLeaf {
+                    if self.isBookmark {
+                        icon = NSWorkspace.sharedWorkspace().iconForFileType(NSFileTypeForHFSTypeCode(OSType(kGenericURLIcon)))
+                    } else {
+                        icon = NSWorkspace.sharedWorkspace().iconForFile(url.path!)
+                    }
+                } else {
+                    icon = NSWorkspace.sharedWorkspace().iconForFile(url.path!)
+                }
+            } else {
+                // it's a separator, don't bother with the icon
+            }
+            icon?.size = NSMakeSize(kIconImageSize, kIconImageSize);
+        } else if !self.isSpecialGroup {
+            // it's a folder, use the folderImage as its icon
+            icon = NSWorkspace.sharedWorkspace().iconForFileType(NSFileTypeForHFSTypeCode(OSType(kGenericFolderIcon)))
+            icon!.size = NSMakeSize(kIconImageSize, kIconImageSize);
+        }
+    
+        return icon;
     }
     
     

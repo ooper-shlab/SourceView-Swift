@@ -32,4 +32,4 @@ The Bookmarks section is determined the external Outline.dict file, read in as a
 You can experiment on your own with adding and removing items in this file.
 
 
-Copyright (C) 2007-2015 Apple Inc. All rights reserved.
+Copyright (C) 2007-2016, Apple Inc. All rights reserved.

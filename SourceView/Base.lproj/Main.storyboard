@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="10116"/>
         <capability name="box content view" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
@@ -814,7 +815,7 @@
                 </splitViewController>
                 <customObject id="hfA-pU-UDO" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="73" y="1126"/>
+            <point key="canvasLocation" x="75" y="1161"/>
         </scene>
         <!--MyDetailViewController-->
         <scene sceneID="wOg-Ur-llV">
@@ -827,7 +828,7 @@
                 </viewController>
                 <customObject id="zsc-Ep-lbG" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="753" y="1317"/>
+            <point key="canvasLocation" x="753" y="1359"/>
         </scene>
         <!--ChiildEditWindowController-->
         <scene sceneID="tw9-EF-SGp">
@@ -966,21 +967,22 @@ Gw
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                                     <prototypeCellViews>
                                                         <customView identifier="Separator" id="hvJ-qc-mbn" userLabel="Separator View" customClass="SeparatorView">
-                                                            <rect key="frame" x="1" y="20" width="405" height="10"/>
+                                                            <rect key="frame" x="1" y="1" width="405" height="2"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         </customView>
                                                         <tableCellView identifier="MainCell" id="pqA-cv-9Cr">
-                                                            <rect key="frame" x="1" y="1" width="405" height="17"/>
+                                                            <rect key="frame" x="1" y="5" width="405" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="1rx-CE-suf" userLabel="Title">
                                                                     <rect key="frame" x="23" y="-3" width="381" height="17"/>
-                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="5OD-X9-dd1">
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="5OD-X9-dd1">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
                                                                     <connections>
+                                                                        <binding destination="pqA-cv-9Cr" name="value" keyPath="objectValue.nodeTitle" id="nbH-F0-4f1"/>
                                                                         <outlet property="delegate" destination="wxf-YY-m1Q" id="CZG-be-eav"/>
                                                                     </connections>
                                                                 </textField>
@@ -990,6 +992,9 @@ Gw
                                                                         <constraint firstAttribute="width" constant="16" id="biA-Nw-TcJ"/>
                                                                     </constraints>
                                                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="eNo-ob-yw5"/>
+                                                                    <connections>
+                                                                        <binding destination="pqA-cv-9Cr" name="value" keyPath="objectValue.nodeIcon" id="D4p-ur-qEQ"/>
+                                                                    </connections>
                                                                 </imageView>
                                                             </subviews>
                                                             <constraints>
@@ -1005,6 +1010,9 @@ Gw
                                                             </connections>
                                                         </tableCellView>
                                                     </prototypeCellViews>
+                                                    <connections>
+                                                        <binding destination="Bqh-AP-xGP" name="value" keyPath="arrangedObjects" id="KCf-16-3M3"/>
+                                                    </connections>
                                                 </tableColumn>
                                             </tableColumns>
                                             <connections>
@@ -1060,13 +1068,13 @@ Gw
         <scene sceneID="3Sc-d7-3qi">
             <objects>
                 <viewController storyboardIdentifier="WebViewController" id="Lgd-Ok-iRt" userLabel="WebViewController" customClass="WebViewController" sceneMemberID="viewController">
-                    <view key="view" id="ELO-Uw-osu" customClass="WebView">
+                    <webView key="view" id="3bw-pa-J6F">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <connections>
-                            <outlet property="UIDelegate" destination="Lgd-Ok-iRt" id="54a-Dz-rT9"/>
-                        </connections>
-                    </view>
+                        <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
+                            <nil key="identifier"/>
+                        </webPreferences>
+                    </webView>
                 </viewController>
                 <customObject id="lfF-y6-oDm" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>

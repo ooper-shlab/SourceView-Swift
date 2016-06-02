@@ -6,11 +6,11 @@
 //
 //
 /*
- Copyright (C) 2015 Apple Inc. All Rights Reserved.
+ Copyright (C) 2016 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
 
  Abstract:
- View controller object for the edit bookmark sheet
+ View controller object for the edit bookmark sheet.
  */
 import Cocoa
 
@@ -21,7 +21,7 @@ let kURL_Key = "url"
 @objc(ChildEditViewController)
 class ChildEditViewController: NSViewController {
     
-    var savedValues: [String: String] = [:]
+    var savedValues: [String: AnyObject] = [:]
     
     @IBOutlet private weak var doneButton: NSButton!
     @IBOutlet private weak var nameField: NSTextField!
@@ -36,8 +36,8 @@ class ChildEditViewController: NSViewController {
     override func viewWillAppear() {
         super.viewWillAppear()
         
-        self.nameField.stringValue = self.savedValues[kName_Key] ?? ""
-        self.urlField.stringValue = self.savedValues[kURL_Key] ?? ""
+        self.nameField.stringValue = self.savedValues[kName_Key] as! String? ?? ""
+        self.urlField.stringValue = (self.savedValues[kURL_Key] as! NSURL?)?.absoluteString ?? ""
         self.doneButton.enabled = self.doneAllowed
     }
     
@@ -53,14 +53,14 @@ class ChildEditViewController: NSViewController {
     // -------------------------------------------------------------------------------
     @IBAction func done(_: AnyObject) {
         let urlStr: String
-        if !self.urlField.stringValue.hasPrefix("http://") {
-            urlStr = "http://\(self.urlField.stringValue)"
+        if !self.urlField.stringValue.hasPrefix(HTTP_PREFIX) {
+            urlStr = "\(HTTP_PREFIX)\(self.urlField.stringValue)"
         } else {
             urlStr = self.urlField.stringValue
         }
         savedValues = [
             kName_Key : self.nameField.stringValue,
-            kURL_Key : urlStr
+            kURL_Key : NSURL(string: urlStr)!
         ]
         self.clearValues()
         

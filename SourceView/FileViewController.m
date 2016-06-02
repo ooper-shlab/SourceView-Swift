@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 Apple Inc. All Rights Reserved.
+ Copyright (C) 2016 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
@@ -10,12 +10,12 @@
 
 @interface FileViewController ()
 
-@property (nonatomic, strong) IBOutlet NSImageView *fileIcon;
-@property (nonatomic, strong) IBOutlet NSTextField *fileName;
-@property (nonatomic, strong) IBOutlet NSTextField *fileSize;
-@property (nonatomic, strong) IBOutlet NSTextField *modDate;
-@property (nonatomic, strong) IBOutlet NSTextField *creationDate;
-@property (nonatomic, strong) IBOutlet NSTextField *fileKindString;
+@property (nonatomic, weak) IBOutlet NSImageView *fileIcon;
+@property (nonatomic, weak) IBOutlet NSTextField *fileName;
+@property (nonatomic, weak) IBOutlet NSTextField *fileSize;
+@property (nonatomic, weak) IBOutlet NSTextField *modDate;
+@property (nonatomic, weak) IBOutlet NSTextField *creationDate;
+@property (nonatomic, weak) IBOutlet NSTextField *fileKindString;
 
 @end
 
@@ -32,7 +32,7 @@
 	[self addObserver:	self
 						forKeyPath:@"url"
 						options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) 
-						context:NULL];
+						context:nil];
 }
 
 // -------------------------------------------------------------------------------
@@ -54,36 +54,35 @@
 								context:(void *)context
 {
 	// name
-	(self.fileName).stringValue = [[NSFileManager defaultManager] displayNameAtPath:(self.url).path];
+	self.fileName.stringValue = [[NSFileManager defaultManager] displayNameAtPath:self.url.path];
 	
 	// icon
-	NSImage *iconImage = [[NSWorkspace sharedWorkspace] iconForFile:(self.url).path];
+	NSImage *iconImage = [[NSWorkspace sharedWorkspace] iconForFile:self.url.path];
 	iconImage.size = NSMakeSize(64,64);
-	(self.fileIcon).image = iconImage;
+	self.fileIcon.image = iconImage;
 	
-	NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:(self.url).path error:nil];
+	NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:self.url.path error:nil];
 	if (attr)
 	{
 		// file size
 		NSNumber *theFileSize = attr[NSFileSize];
-        (self.fileSize).stringValue = [NSString stringWithFormat:@"%@ KB on disk", theFileSize.stringValue];
+        self.fileSize.stringValue = [NSString stringWithFormat:@"%@ KB on disk", theFileSize.stringValue];
 		
 		// creation date
 		NSDate *fileCreationDate = attr[NSFileCreationDate];
-        (self.creationDate).stringValue = fileCreationDate.description;
+        self.creationDate.stringValue = fileCreationDate.description;
 				
 		// mod date
 		NSDate *fileModDate = attr[NSFileModificationDate];
-        (self.modDate).stringValue = fileModDate.description;	
+        self.modDate.stringValue = fileModDate.description;
 	}
 
 	// kind string
-	CFStringRef kindStr = nil;
-	LSCopyKindStringForURL((__bridge CFURLRef)self.url, &kindStr);
-	if (kindStr !=  nil)
+	NSString *kindStr;
+    [self.url getResourceValue:&kindStr forKey:NSURLLocalizedTypeDescriptionKey error:nil];
+	if (kindStr != nil)
 	{
-		(self.fileKindString).stringValue = (__bridge NSString *)kindStr;
-		CFRelease(kindStr);
+		self.fileKindString.stringValue = kindStr;
 	}
 }
 

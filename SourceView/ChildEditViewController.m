@@ -1,9 +1,9 @@
 /*
- Copyright (C) 2015 Apple Inc. All Rights Reserved.
+ Copyright (C) 2016 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
- View controller object for the edit bookmark sheet
+ View controller object for the edit bookmark sheet.
  */
 
 #import "ChildEditViewController.h"
@@ -46,18 +46,19 @@
 // -------------------------------------------------------------------------------
 - (IBAction)done:(id)sender
 {
+    // add the http prefix if the user forgot to
     NSString *urlStr;
-    if (![(self.urlField).stringValue hasPrefix:@"http://"])
+    if (![self.urlField.stringValue hasPrefix:HTTP_PREFIX])
     {
-        urlStr = [NSString stringWithFormat:@"http://%@", (self.urlField).stringValue];
+        urlStr = [NSString stringWithFormat:@"%@%@", HTTP_PREFIX, self.urlField.stringValue];
     }
     else
     {
-        urlStr = (self.urlField).stringValue;
+        urlStr = self.urlField.stringValue;
     }
     _savedValues = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                        (self.nameField).stringValue, kName_Key,
-                        urlStr, kURL_Key,
+                        self.nameField.stringValue, kName_Key,
+                        [NSURL URLWithString:urlStr], kURL_Key,
                    nil];
     [self clearValues];
     

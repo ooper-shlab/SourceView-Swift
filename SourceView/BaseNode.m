@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 Apple Inc. All Rights Reserved.
+ Copyright (C) 2016 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
@@ -7,6 +7,11 @@
  */
 
 #import "BaseNode.h"
+
+#define kIconImageSize      16.
+#define PLACES_NAME         @"PLACES"
+#define BOOKMARKS_NAME      @"BOOKMARKS"
+
 
 @implementation BaseNode
 
@@ -25,6 +30,18 @@
 	}
 	return self;
 }
+
+// -------------------------------------------------------------------------------
+//	description
+// -------------------------------------------------------------------------------
++ (NSString *)description { return @"BaseNode"; }
+
+// -------------------------------------------------------------------------------
+//	String constants
+// -------------------------------------------------------------------------------
++ (NSString *)placesName { return @"PLACES"; }
++ (NSString *)bookmarksName { return @"BOOKMARKS"; }
++ (NSString *)untitledName { return @"Untitled"; } // default name for added folders and leafs
 
 // -------------------------------------------------------------------------------
 //	initLeaf
@@ -60,7 +77,12 @@
 // -------------------------------------------------------------------------------
 - (BOOL)isBookmark
 {
-    return [self.urlString hasPrefix:@"http://"];
+    BOOL isBookmark = NO;
+    if (self.url != nil)
+    {
+        return ![self.url isFileURL];
+    }
+    return isBookmark;
 }
 
 // -------------------------------------------------------------------------------
@@ -78,13 +100,10 @@
 {
     BOOL isDirectory = NO;
     
-    if (self.urlString != nil)
+    if (self.url != nil)
     {
         NSNumber *isURLDirectory = nil;
-        NSURL *url = [NSURL fileURLWithPath:self.urlString];
-    
-        [url getResourceValue:&isURLDirectory forKey:NSURLIsDirectoryKey error:nil];
-    
+        [self.url getResourceValue:&isURLDirectory forKey:NSURLIsDirectoryKey error:nil];
         isDirectory = isURLDirectory.boolValue;
     }
     
@@ -105,6 +124,65 @@
 - (NSComparisonResult)compare:(BaseNode *)aNode
 {
 	return [self.nodeTitle.lowercaseString compare:aNode.nodeTitle.lowercaseString];
+}
+
+// -------------------------------------------------------------------------------
+//	isSpecialGroup
+// -------------------------------------------------------------------------------
+- (BOOL)isSpecialGroup
+{
+    return ([self.nodeTitle isEqualToString:BOOKMARKS_NAME] || [self.nodeTitle isEqualToString:PLACES_NAME]);
+}
+
+// -------------------------------------------------------------------------------
+//	isSeparator
+// -------------------------------------------------------------------------------
+- (BOOL)isSeparator
+{
+    return (self.nodeIcon == nil && self.nodeTitle.length == 0);
+}
+
+// -------------------------------------------------------------------------------
+//	nodeIcon
+// -------------------------------------------------------------------------------
+- (NSImage *)nodeIcon
+{
+    NSImage *icon = nil;
+    if (self.isLeaf)
+    {
+        // does it have a URL string?
+        if (self.url != nil)
+        {
+            if (self.isLeaf)
+            {
+                if (self.isBookmark)
+                {
+                    icon = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericURLIcon)];
+                }
+                else
+                {
+                    icon = [[NSWorkspace sharedWorkspace] iconForFile:[self.url path]];
+                }
+            }
+            else
+            {
+                icon = [[NSWorkspace sharedWorkspace] iconForFile:[self.url path]];
+            }
+        }
+        else
+        {
+            // it's a separator, don't bother with the icon
+        }
+        icon.size = NSMakeSize(kIconImageSize, kIconImageSize);
+    }
+    else if (!self.isSpecialGroup)
+    {
+        // it's a folder, use the folderImage as its icon
+        icon = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
+        icon.size = NSMakeSize(kIconImageSize, kIconImageSize);
+    }
+    
+    return icon;
 }
 
 

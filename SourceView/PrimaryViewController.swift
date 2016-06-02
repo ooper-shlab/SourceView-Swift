@@ -6,11 +6,11 @@
 //
 //
 /*
- Copyright (C) 2015 Apple Inc. All Rights Reserved.
+ Copyright (C) 2016 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
 
  Abstract:
- View controller containing the lower UI controls and the embedded child view controller (split view controller)
+ View controller containing the lower UI controls and the embedded child view controller (split view controller).
  */
 import Cocoa
 
@@ -39,8 +39,9 @@ class PrimaryViewController: NSViewController {
     //	viewDidLoad
     // -------------------------------------------------------------------------------
     override func viewDidLoad() {
-        // Note: we keep the left split view item from growing as the window grows by setting its holding priority to 200, and the right to 199.
-        // The view with the lowest priority will be the first to take on additional width if the split view grows or shrinks.
+        // Note: we keep the left split view item from growing as the window grows by setting its holding priority to 200,
+        // and the right to 199. The view with the lowest priority will be the first to take on additional width if the
+        // split view grows or shrinks.
         //
         super.viewDidLoad()
         
@@ -71,13 +72,13 @@ class PrimaryViewController: NSViewController {
         // note: we start observing after our outline view is populated so we don't receive unnecessary notifications at startup
         //
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: "selectionDidChange:",
+            selector: #selector(PrimaryViewController.selectionDidChange(_:)),
             name: NSOutlineViewSelectionDidChangeNotification,
             object: nil)
         
         // notification so we know when the icon view controller is done populating its content
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: "contentReceived:",
+            selector: #selector(PrimaryViewController.contentReceived(_:)),
             name: kReceivedContentNotification,
             object: nil)
     }
@@ -123,10 +124,16 @@ class PrimaryViewController: NSViewController {
             
             // report the URL to our NSTextField
             let item = outlineView.itemAtRow(selectedRow)!.representedObject as! BaseNode
-            self.urlField.stringValue = item.urlString ?? ""
+            
+            if item.isBookmark {
+                self.urlField.stringValue = item.url?.absoluteString ?? "";
+            } else {
+                
+                self.urlField.stringValue = item.url?.path ?? "";
+            }
             
             // enable the Edit... menu item if the selected node is a bookmark
-            self.editBookmarkMenuItem.enabled = (item.urlString == nil) || item.isBookmark
+            self.editBookmarkMenuItem.enabled = !(item.url?.fileURL ?? false)
             
             if item.isDirectory {
                 // we are populating the detail view controler with contents of a folder on disk

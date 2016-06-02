@@ -2,3 +2,5 @@
 @import Cocoa;
 @import Foundation;
 #endif
+
+#define HTTP_PREFIX @"http://"

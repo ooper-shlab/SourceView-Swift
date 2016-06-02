@@ -6,7 +6,7 @@
 //
 //
 /*
- Copyright (C) 2015 Apple Inc. All Rights Reserved.
+ Copyright (C) 2016 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
 
  Abstract:
@@ -65,8 +65,7 @@ class FileViewController: NSViewController {
             let iconImage = NSWorkspace.sharedWorkspace().iconForFile(path)
             iconImage.size = NSMakeSize(64, 64)
             self.fileIcon.image = iconImage
-            do {
-                let attr = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
+            if let attr = try? NSFileManager.defaultManager().attributesOfItemAtPath(path) {
                 // file size
                 let theFileSize = attr[NSFileSize] as! NSNumber
                 self.fileSize.stringValue = "\(theFileSize.stringValue) KB on disk"
@@ -78,15 +77,13 @@ class FileViewController: NSViewController {
                 // mod date
                 let fileModDate = attr[NSFileModificationDate] as! NSDate
                 self.modDate.stringValue = fileModDate.description
-            } catch _ {
             }
             
             // kind string
-            var umKindStr: Unmanaged<CFString>? = nil
-            LSCopyKindStringForURL(url, &umKindStr)
-            if umKindStr != nil {
-                let kindStr: CFString = umKindStr!.takeRetainedValue()
-                self.fileKindString.stringValue = kindStr as String
+            var kindStr: AnyObject?
+            _ = try? url.getResourceValue(&kindStr, forKey: NSURLLocalizedTypeDescriptionKey)
+            if let str = kindStr as? String {
+                self.fileKindString.stringValue = str
             }
         } else {
             self.fileName.stringValue = ""

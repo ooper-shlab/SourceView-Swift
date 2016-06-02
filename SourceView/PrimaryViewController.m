@@ -1,9 +1,9 @@
 /*
- Copyright (C) 2015 Apple Inc. All Rights Reserved.
+ Copyright (C) 2016 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
- View controller containing the lower UI controls and the embedded child view controller (split view controller)
+ View controller containing the lower UI controls and the embedded child view controller (split view controller).
  */
 
 #import "PrimaryViewController.h"
@@ -42,8 +42,9 @@ NSString *kEditBookmarkNotification = @"EditBookmarkNotification";
 // -------------------------------------------------------------------------------
 - (void)viewDidLoad
 {
-    // Note: we keep the left split view item from growing as the window grows by setting its holding priority to 200, and the right to 199.
-    // The view with the lowest priority will be the first to take on additional width if the split view grows or shrinks.
+    // Note: we keep the left split view item from growing as the window grows by setting its holding priority to 200,
+    // and the right to 199. The view with the lowest priority will be the first to take on additional width if the
+    // split view grows or shrinks.
     //
     [super viewDidLoad];
     
@@ -61,7 +62,7 @@ NSString *kEditBookmarkNotification = @"EditBookmarkNotification";
     self.editBookmarkMenuItem.enabled = NO;
     
     // truncate to the middle if the url is too long to fit
-    (self.urlField).cell.lineBreakMode = NSLineBreakByTruncatingMiddle;
+    self.urlField.cell.lineBreakMode = NSLineBreakByTruncatingMiddle;
 }
 
 // -------------------------------------------------------------------------------
@@ -133,10 +134,19 @@ NSString *kEditBookmarkNotification = @"EditBookmarkNotification";
         
         // report the URL to our NSTextField
         BaseNode *item = [[outlineView itemAtRow:selectedRow] representedObject];
-        self.urlField.stringValue = (item.urlString != nil) ? item.urlString : @"";
+        
+        if ([item isBookmark])
+        {
+            self.urlField.stringValue = (item.url != nil) ? item.url.absoluteString : @"";
+        }
+        else
+        {
+            
+            self.urlField.stringValue = (item.url != nil) ? item.url.path : @"";
+        }
         
         // enable the Edit... menu item if the selected node is a bookmark
-        self.editBookmarkMenuItem.enabled = (item.urlString == nil) || item.isBookmark;
+        self.editBookmarkMenuItem.enabled = ![item.url isFileURL];
         
         if (item.isDirectory)
         {

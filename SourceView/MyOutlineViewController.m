@@ -1,9 +1,9 @@
 /*
- Copyright (C) 2015 Apple Inc. All Rights Reserved.
+ Copyright (C) 2016 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
- The master view controller containing the NSOutlineView and NSTreeController
+ The master view controller containing the NSOutlineView and NSTreeController.
  */
 
 #import "MyOutlineViewController.h"
@@ -25,13 +25,7 @@
 
 #define CHILDEDIT_IDENTIFIER	@"ChildEditWindowController"	// storyboard identifier the child edit window controller
 
-#define UNTITLED_NAME			@"Untitled"		// default name for added folders and leafs
-
-#define HTTP_PREFIX				@"http://"
-
-// default folder titles
-#define PLACES_NAME				@"PLACES"
-#define BOOKMARKS_NAME			@"BOOKMARKS"
+#define SEPARATOR_VIEW          @"Separator"
 
 // keys in our disk-based dictionary representing our outline view's data
 #define KEY_NAME				@"name"
@@ -40,8 +34,6 @@
 #define KEY_GROUP				@"group"
 #define KEY_FOLDER				@"folder"
 #define KEY_ENTRIES				@"entries"
-
-#define kIconImageSize          16.0
 
 #define kNodesPBoardType		@"myNodesPBoardType"	// drag and drop pasteboard type
 
@@ -57,7 +49,7 @@
 @interface TreeAdditionObj : NSObject
 
 @property (unsafe_unretained, readonly) NSIndexPath *indexPath;
-@property (unsafe_unretained, readonly) NSString *nodeURL;
+@property (unsafe_unretained, readonly) NSURL *nodeURL;
 @property (unsafe_unretained, readonly) NSString *nodeName;
 @property (readonly) BOOL selectItsParent;
 
@@ -71,7 +63,7 @@
 // -------------------------------------------------------------------------------
 //  initWithURL:url:name:select
 // -------------------------------------------------------------------------------
-- (instancetype)initWithURL:(NSString *)url withName:(NSString *)name selectItsParent:(BOOL)select
+- (instancetype)initWithURL:(NSURL *)url withName:(NSString *)name selectItsParent:(BOOL)select
 {
 	self = [super init];
 	
@@ -91,10 +83,6 @@
 
 @property (nonatomic, weak)	IBOutlet NSOutlineView *myOutlineView;
 @property (nonatomic, weak)	IBOutlet NSView	*placeHolderView;
-
-// cached images for generic folder and url document
-@property (nonatomic, strong) NSImage *folderImage;
-@property (nonatomic, strong) NSImage *urlImage;
 
 @property (nonatomic, strong) NSArray *dragNodesArray; // used to keep track of dragged nodes
 @property (nonatomic, strong) NSMutableArray *contents; // used to keep track of dragged nodes
@@ -133,24 +121,17 @@
     // load the child edit view controller for later use
     _childEditWindowController = [self.storyboard instantiateControllerWithIdentifier:CHILDEDIT_IDENTIFIER];
     
-    // cache the reused icon images
-    _folderImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
-    (self.folderImage).size = NSMakeSize(kIconImageSize, kIconImageSize);
-    
-    _urlImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericURLIcon)];
-    (self.urlImage).size = NSMakeSize(kIconImageSize, kIconImageSize);
-    
     [self populateOutlineContents];
 
     // scroll to the top in case the outline contents is very long
-    (self.myOutlineView).enclosingScrollView.verticalScroller.floatValue = 0.0;
-    [(self.myOutlineView).enclosingScrollView.contentView scrollToPoint:NSMakePoint(0,0)];
+    self.myOutlineView.enclosingScrollView.verticalScroller.floatValue = 0.0;
+    [self.myOutlineView.enclosingScrollView.contentView scrollToPoint:NSMakePoint(0,0)];
     
     // make our outline view appear with gradient selection, and behave like the Finder, iTunes, etc.
-    (self.myOutlineView).selectionHighlightStyle = NSTableViewSelectionHighlightStyleSourceList;
+    self.myOutlineView.selectionHighlightStyle = NSTableViewSelectionHighlightStyleSourceList;
     
     // drag and drop support
-    [self.myOutlineView registerForDraggedTypes:@[kNodesPBoardType,			// our internal drag type
+    [self.myOutlineView registerForDraggedTypes:@[kNodesPBoardType,		// our internal drag type
                                              NSURLPboardType,			// single url from pasteboard
                                              NSFilenamesPboardType,		// from Safari or Finder
                                              NSFilesPromisePboardType]];
@@ -202,7 +183,7 @@
 {
 	if (self.treeController.selectedNodes.count > 0)
 	{
-		NSTreeNode *firstSelectedNode = (self.treeController).selectedNodes[0];
+		NSTreeNode *firstSelectedNode = self.treeController.selectedNodes[0];
 		NSTreeNode *parentNode = firstSelectedNode.parentNode;
 		if (parentNode)
 		{
@@ -239,7 +220,7 @@
 		// this will give us an index which will allow us to add a node to the end of the currently selected node's children array.
 		//
 		indexPath = self.treeController.selectionIndexPath;
-		if ([(self.treeController).selectedObjects[0] isLeaf])
+		if ([self.treeController.selectedObjects[0] isLeaf])
 		{
 			// user is trying to add a folder on a selected child,
 			// so deselect child and select its parent for addition
@@ -247,7 +228,7 @@
 		}
 		else
 		{
-			indexPath = [indexPath indexPathByAddingIndex:[(self.treeController).selectedObjects[0] children].count];
+			indexPath = [indexPath indexPathByAddingIndex:[self.treeController.selectedObjects[0] children].count];
 		}
 	}
 	
@@ -266,7 +247,7 @@
 	if (self.treeController.selectedObjects.count > 0)
 	{
 		// we have a selection
-		if ([(self.treeController).selectedObjects[0] isLeaf])
+		if ([self.treeController.selectedObjects[0] isLeaf])
 		{
 			// trying to add a child to a selected leaf node, so select its parent for add
 			[self selectParentFromSelection];
@@ -278,8 +259,8 @@
 	if (self.treeController.selectedObjects.count > 0)
 	{
 		// we have a selection, insert at the end of the selection
-		indexPath = (self.treeController).selectionIndexPath;
-		indexPath = [indexPath indexPathByAddingIndex:[(self.treeController).selectedObjects[0] children].count];
+		indexPath = self.treeController.selectionIndexPath;
+		indexPath = [indexPath indexPathByAddingIndex:[self.treeController.selectedObjects[0] children].count];
 	}
 	else
 	{
@@ -288,25 +269,20 @@
 	}
 	
 	// create a leaf node
-	ChildNode *node = [[ChildNode alloc] initLeaf];
-	node.urlString = treeAddition.nodeURL;
+	ChildNode *node = [[ChildNode alloc] initLeaf];;
+    node.url = treeAddition.nodeURL;
     
-	if (treeAddition.nodeURL)
+	if (treeAddition.nodeURL != nil)
 	{
-		if (treeAddition.nodeURL.length > 0)
-		{
-			// the child to insert has a valid URL, use its display name as the node title
-			if (treeAddition.nodeName)
-                node.nodeTitle = treeAddition.nodeName;
-			else
-                node.nodeTitle = [[NSFileManager defaultManager] displayNameAtPath:node.urlString];
-		}
-		else
-		{
-			// the child to insert will be an empty URL
-            node.nodeTitle = UNTITLED_NAME;
-            node.urlString = HTTP_PREFIX;
-		}
+        // the child to insert has a valid URL, use its display name as the node title
+        if (treeAddition.nodeName)
+        {
+            node.nodeTitle = treeAddition.nodeName;
+        }
+        else
+        {
+            node.nodeTitle = [[NSFileManager defaultManager] displayNameAtPath:[node.url absoluteString]];
+        }
 	}
 	
 	// the user is adding a child node, tell the controller directly
@@ -322,7 +298,7 @@
 // -------------------------------------------------------------------------------
 //	addChild:url:withName:selectParent
 // -------------------------------------------------------------------------------
-- (void)addChild:(NSString *)url withName:(NSString *)nameStr selectParent:(BOOL)select
+- (void)addChild:(NSURL *)url withName:(NSString *)nameStr selectParent:(BOOL)select
 {
 	TreeAdditionObj *treeObjInfo = [[TreeAdditionObj alloc] initWithURL:url
                                                                withName:nameStr
@@ -340,7 +316,7 @@
 		if ([entry isKindOfClass:[NSDictionary class]])
 		{
 			NSString *urlStr = entry[KEY_URL];
-			
+            NSURL *url = [NSURL URLWithString:urlStr];
 			if (entry[KEY_SEPARATOR])
 			{
 				// its a separator mark, we treat is as a leaf
@@ -350,13 +326,13 @@
 			{
 				// we treat file system folders as a leaf and show its contents in the NSCollectionView
 				NSString *folderName = entry[KEY_FOLDER];
-				[self addChild:urlStr withName:folderName selectParent:YES];
+				[self addChild:url withName:folderName selectParent:YES];
 			}
 			else if (entry[KEY_URL])
 			{
 				// its a leaf item with a URL
 				NSString *nameStr = entry[KEY_NAME];
-				[self addChild:urlStr withName:nameStr selectParent:YES];
+				[self addChild:url withName:nameStr selectParent:YES];
 			}
 			else
 			{
@@ -376,24 +352,25 @@
 	if (!discloseParent)
     {
         // inserting children automatically expands its parent, we want to close it
-        if ((self.treeController).selectedNodes.count > 0)
+        if (self.treeController.selectedNodes.count > 0)
         {
-            NSTreeNode *lastSelectedNode = (self.treeController).selectedNodes[0];
+            NSTreeNode *lastSelectedNode = self.treeController.selectedNodes[0];
             [self.myOutlineView collapseItem:lastSelectedNode];
         }
     }
 }
 
 // -------------------------------------------------------------------------------
-//	populateOutline
+//	addBookmarksSection
 //
 //	Populate the tree controller from disk-based dictionary (Outline.dict)
 // -------------------------------------------------------------------------------
-- (void)populateOutline
+- (void)addBookmarksSection
 {
     // add the "Bookmarks" section
-	[self addFolderWithName:BOOKMARKS_NAME];
-
+    [self addFolderWithName:[BaseNode bookmarksName]];
+    
+    // add its content (contant determined our dictionary file)
     NSDictionary *initData = [NSDictionary dictionaryWithContentsOfFile:
 								[[NSBundle mainBundle] pathForResource:INITIAL_INFODICT ofType:@"dict"]];
 	NSDictionary *entries = initData[KEY_ENTRIES];
@@ -408,13 +385,13 @@
 - (void)addPlacesSection
 {
 	// add the "Places" section
-    [self addFolderWithName:PLACES_NAME];
-	
-	// add its children
-	[self addChild:NSHomeDirectory() withName:@"Home" selectParent:YES];
+	[self addFolderWithName:[BaseNode placesName]];
+    
+	// add its children (contents of the Home directory)
+	[self addChild:[NSURL fileURLWithPath:NSHomeDirectory()] withName:@"Home" selectParent:YES];
     
     NSArray *appsDirectory = NSSearchPathForDirectoriesInDomains(NSApplicationDirectory, NSLocalDomainMask, YES);
-	[self addChild:appsDirectory[0] withName:nil selectParent:YES];
+    [self addChild:[NSURL fileURLWithPath:appsDirectory[0]] withName:nil selectParent:YES];
 
 	[self selectParentFromSelection];
 }
@@ -428,45 +405,13 @@
     [self.myOutlineView setHidden:YES];
     
     [self addPlacesSection];		// add the "Places" outline section
-    [self populateOutline];			// add the "Bookmark" outline content
+    [self addBookmarksSection];		// add the "Bookmark" outline content
     
     // remove the current selection
-    NSArray *selection = (self.treeController).selectionIndexPaths;
+    NSArray *selection = self.treeController.selectionIndexPaths;
     [self.treeController removeSelectionIndexPaths:selection];
     
     [self.myOutlineView setHidden:NO];	// we are done populating the outline view content, show it again
-}
-
-// -------------------------------------------------------------------------------
-//	textFieldAction:sender
-// -------------------------------------------------------------------------------
-- (IBAction)textFieldAction:(id)sender
-{
-    // user was done editing an item, assign the new text value to it's represented object
-    NSTextField *textField = (NSTextField *)sender;
-    NSInteger selectedRow = (self.myOutlineView).selectedRow;
-    BaseNode *node = [[self.myOutlineView itemAtRow:selectedRow] representedObject];
-    node.nodeTitle = textField.stringValue;
-}
-
-
-#pragma mark - Node checks
-
-// -------------------------------------------------------------------------------
-//	isSeparator:node
-// -------------------------------------------------------------------------------
-- (BOOL)isSeparator:(BaseNode *)node
-{
-    return (node.nodeIcon == nil && node.nodeTitle.length == 0);
-}
-
-// -------------------------------------------------------------------------------
-//	isSpecialGroup:groupNode
-// -------------------------------------------------------------------------------
-- (BOOL)isSpecialGroup:(BaseNode *)groupNode
-{
-	return (groupNode.nodeIcon == nil &&
-			([groupNode.nodeTitle isEqualToString:BOOKMARKS_NAME] || [groupNode.nodeTitle isEqualToString:PLACES_NAME]));
 }
 
 
@@ -488,13 +433,13 @@
 // -------------------------------------------------------------------------------
 - (void)addFolder:(NSNotification *)notif
 {
-    [self addFolderWithName:UNTITLED_NAME];
+    [self addFolderWithName:[BaseNode untitledName]];
 }
 
 // -------------------------------------------------------------------------------
 //  removeFolder:notif
 //
-//  Notification sent from PrimaryViewController class, to add a folder.
+//  Notification sent from PrimaryViewController class, to remove a folder.
 // -------------------------------------------------------------------------------
 - (void)removeFolder:(NSNotification *)notif
 {
@@ -508,14 +453,15 @@
 // -------------------------------------------------------------------------------
 - (void)addBookmark:(NSNotification *)notif
 {
+    ChildEditViewController *childEditViewController = (ChildEditViewController *)self.childEditWindowController.contentViewController;
+    childEditViewController.savedValues = @{kName_Key:[BaseNode untitledName], kURL_Key:HTTP_PREFIX};
+    
     [self.view.window beginSheet:self.childEditWindowController.window completionHandler:^(NSModalResponse returnCode) {
         if (returnCode == NSModalResponseOK)
         {
-            ChildEditViewController *childEditViewController = (ChildEditViewController *)self.childEditWindowController.contentViewController;
-            
             NSString *itemStr = childEditViewController.savedValues[kName_Key];
             [self addChild:childEditViewController.savedValues[kURL_Key]
-                  withName:(itemStr.length > 0) ? childEditViewController.savedValues[kName_Key] : UNTITLED_NAME
+                  withName:(itemStr.length > 0) ? childEditViewController.savedValues[kName_Key] : [BaseNode untitledName]
               selectParent:NO];	// add empty untitled child
         }
     }];
@@ -531,29 +477,29 @@
     ChildEditViewController *childEditViewController = (ChildEditViewController *)self.childEditWindowController.contentViewController;
     
     // get the selected item's name and url
-    NSArray *selection = (self.treeController).selectedObjects;
+    NSArray *selection = self.treeController.selectedObjects;
     ChildNode *node = selection[0];
   
-    if (node.urlString.length == 0 || !node.isBookmark)
+    if (node.url == nil && !node.isBookmark)
     {
         // it's a folder or a file-system based object, just allow editing the cell title
-        NSInteger selectedRow = (self.myOutlineView).selectedRow;
+        NSInteger selectedRow = self.myOutlineView.selectedRow;
         [self.myOutlineView editColumn:0 row:selectedRow withEvent:NSApp.currentEvent select:YES];
     }
     else
     {
-        childEditViewController.savedValues = @{kName_Key:node.nodeTitle, kURL_Key:node.urlString};
+        childEditViewController.savedValues = @{kName_Key:node.nodeTitle, kURL_Key:node.url};
         [self.view.window beginSheet:self.childEditWindowController.window completionHandler:^(NSModalResponse returnCode) {
             if (returnCode == NSModalResponseOK)
             {
                 // create a child node
                 ChildNode *childNode = [[ChildNode alloc] initLeaf];
-                childNode.urlString = childEditViewController.savedValues[kURL_Key];
+                childNode.url = childEditViewController.savedValues[kURL_Key];
                 NSString *newNodeStr = childEditViewController.savedValues[kName_Key];
-                childNode.nodeTitle = (newNodeStr.length > 0) ? newNodeStr : UNTITLED_NAME;
+                childNode.nodeTitle = (newNodeStr.length > 0) ? newNodeStr : [BaseNode untitledName];
                 
                 // remove the current selection and replace it with the newly edited child
-                NSIndexPath *indexPath = (self.treeController).selectionIndexPath;
+                NSIndexPath *indexPath = self.treeController.selectionIndexPath;
                 [self.treeController remove:self];
                 [self.treeController insertObject:childNode atArrangedObjectIndexPath:indexPath];
             }
@@ -574,34 +520,32 @@
     if (selection != nil && selection.count == 1)
     {
         BaseNode *node = [selection[0] representedObject];
-        NSString *urlStr = node.urlString;
-        if (urlStr != nil)
+
+        if (node.url != nil)
         {
             if (node.isBookmark)
             {
                 // it's a bookmark,
                 // return a view controller with a web view, retarget with "urlStr"
+                //
                 WebView *webView = (WebView *)self.webViewController.view;
-                webView.mainFrameURL = urlStr;	// re-target to the new url
-                returnViewController = self.webViewController;
+                webView.mainFrameURL = [node.url absoluteString];	// re-target to the new url
                 
-                self.webViewController.retargetWebView = YES;
+                returnViewController = self.webViewController;
             }
             else
             {
-                NSURL *url = [NSURL fileURLWithPath:node.urlString];
-                
                 // detect if the url is a directory
                 if (node.isDirectory)
                 {
                     // it's a folder
-                    self.iconViewController.url = url;
+                    self.iconViewController.url = node.url;
                     returnViewController = self.iconViewController;
                 }
                 else
                 {
                     // it's a file
-                    self.fileViewController.url = url;
+                    self.fileViewController.url = node.url;
                     returnViewController = self.fileViewController;
                 }
             }
@@ -629,7 +573,7 @@
 {
 	// don't allow special group nodes (Places and Bookmarks) to be selected
 	BaseNode *node = [item representedObject];
-	return (![self isSpecialGroup:node] && ![self isSeparator:node]);
+    return (!node.isSpecialGroup && !node.isSeparator);
 }
 
 // -------------------------------------------------------------------------------
@@ -642,59 +586,23 @@
     BaseNode *node = [item representedObject];
     if (node != nil)
     {
-        if ([self outlineView:outlineView isGroupItem:item])
+        if ([self outlineView:outlineView isGroupItem:item])    // is it a special group (not a folder)?
         {
-            NSString *identifier = (outlineView.tableColumns[0]).identifier;
+            NSString *identifier = outlineView.tableColumns[0].identifier;
             result = [outlineView makeViewWithIdentifier:identifier owner:self];
-            NSString *value = (node.nodeTitle).uppercaseString;
-            result.textField.stringValue = value;
         }
-        else if ([self isSeparator:node])
+        else if (node.isSeparator)
         {
             // separators have no title or icon, just use the custom view to draw it
-            result = [outlineView makeViewWithIdentifier:@"Separator" owner:self];
+            result = [outlineView makeViewWithIdentifier:SEPARATOR_VIEW owner:self];
         }
         else
         {
-            result.textField.stringValue = node.nodeTitle;
-            
-            if (node.isLeaf)
+            // only nodes with no URL or a http URL has it's name editable
+            if (node.url == nil || ![node.url isFileURL])
             {
-                // does it have a URL string?
-                NSString *urlStr = node.urlString;
-                if (urlStr)
-                {
-                    if (node.isLeaf)
-                    {
-                        NSImage *iconImage;
-                        if (node.isBookmark)
-                            iconImage = self.urlImage;
-                        else
-                            iconImage = [[NSWorkspace sharedWorkspace] iconForFile:urlStr];
-                        node.nodeIcon = iconImage;
-                        
-                        [result.textField setEditable:YES];
-                    }
-                    else
-                    {
-                        NSImage *iconImage = [[NSWorkspace sharedWorkspace] iconForFile:urlStr];
-                        node.nodeIcon = iconImage;
-                    }
-                }
-                else
-                {
-                    // it's a separator, don't bother with the icon
-                }
+                result.textField.editable = YES;
             }
-            else
-            {
-                // it's a folder, use the folderImage as its icon
-                node.nodeIcon = self.folderImage;
-            }
-            
-            // set the cell's image
-            node.nodeIcon.size = NSMakeSize(kIconImageSize, kIconImageSize);
-            result.imageView.image = node.nodeIcon;
         }
     }
     
@@ -711,11 +619,14 @@
 }
 
 // ----------------------------------------------------------------------------------------
-// outlineView:isGroupItem:item
+//  outlineView:isGroupItem:item
+//
+//  Determine if the item should be a special grouping (not a folder but a group with Hide/Show buttons)
 // ----------------------------------------------------------------------------------------
 - (BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item
 {
-    return ([self isSpecialGroup:[item representedObject]] ? YES : NO);
+    BaseNode *node = [item representedObject];
+    return (node.isSpecialGroup ? YES : NO);
 }
 
 
@@ -740,9 +651,9 @@
 //	This method is used by NSOutlineView to determine a valid drop target.
 // -------------------------------------------------------------------------------
 - (NSDragOperation)outlineView:(NSOutlineView *)ov
-						validateDrop:(id <NSDraggingInfo>)info
-						proposedItem:(id)item
-						proposedChildIndex:(NSInteger)index
+                  validateDrop:(id <NSDraggingInfo>)info
+                  proposedItem:(id)item
+            proposedChildIndex:(NSInteger)index
 {
 	NSDragOperation result = NSDragOperationNone;
 	
@@ -753,8 +664,9 @@
 	}
 	else
 	{
-		if ([self isSpecialGroup:[item representedObject]])
-		{
+        BaseNode *node = [item representedObject];
+        if (node.isSpecialGroup)
+        {
 			// don't allow dragging into special grouped sections (i.e. Places and Bookmarks)
 			result = NSDragOperationNone;
 		}
@@ -802,10 +714,9 @@
 		ChildNode *node = [[ChildNode alloc] init];
 		
         node.isLeaf = YES;
-
         node.nodeTitle = nameArray[i];
+        node.url = [NSURL URLWithString:urlArray[i]];
         
-        node.urlString = urlArray[i];
 		[self.treeController insertObject:node atArrangedObjectIndexPath:indexPath];
 	}
 }
@@ -859,7 +770,7 @@
             node.isLeaf = YES;
 
             node.nodeTitle = name;
-            node.urlString = url.path;
+            node.url = url;
             
 			[self.treeController insertObject:node atArrangedObjectIndexPath:indexPath];
 		}
@@ -883,7 +794,7 @@
 			// url is file-based, use it's display name
 			NSString *name = [[NSFileManager defaultManager] displayNameAtPath:url.path];
             node.nodeTitle = name;
-            node.urlString = url.path;
+            node.url = url;
 		}
 		else
 		{
@@ -911,7 +822,7 @@
                 node.nodeTitle = url.path.lastPathComponent;
 			}
 				
-            node.urlString = url.absoluteString;
+            node.url = url;
 		}
         node.isLeaf = YES;
 		
@@ -944,7 +855,7 @@
 	else
 	{
 		// drop at the top root level
-		if (index == -1)	// drop area might be ambibuous (not at a particular location)
+		if (index == -1)	// drop area might be ambibguous (not at a particular location)
 			indexPath = [NSIndexPath indexPathWithIndex:self.contents.count]; // drop at the end of the top level
 		else
 			indexPath = [NSIndexPath indexPathWithIndex:index]; // drop at a particular place at the top level

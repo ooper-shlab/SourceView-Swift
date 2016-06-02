@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 Apple Inc. All Rights Reserved.
+ Copyright (C) 2016 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
@@ -8,13 +8,21 @@
 
 @interface BaseNode : NSObject <NSCoding, NSCopying>
 
+// default grouping titles
++ (NSString *)placesName;
++ (NSString *)bookmarksName;
++ (NSString *)untitledName;    // node with not title set
+
 @property (strong) NSString *nodeTitle;
-@property (strong) NSImage *nodeIcon;
+@property (nonatomic, strong) NSImage *nodeIcon;
 @property (strong) NSMutableArray *children;
-@property (strong) NSString *urlString;
+@property (strong) NSURL *url;
 @property (assign) BOOL isLeaf;
 @property (assign) BOOL isBookmark;
 @property (assign) BOOL isDirectory;
+
+@property (readonly) BOOL isSpecialGroup;
+@property (readonly) BOOL isSeparator;
 
 - (instancetype)initLeaf;
 
