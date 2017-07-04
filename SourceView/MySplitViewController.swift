@@ -6,7 +6,7 @@
 //
 //
 /*
- Copyright (C) 2016 Apple Inc. All Rights Reserved.
+ Copyright (C) 2017 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
 
  Abstract:
@@ -29,7 +29,7 @@ class MySplitViewController: NSSplitViewController {
     override func viewDidAppear() {
         super.viewDidAppear()
         
-        // Note: we keep the left split view item from growing as the window grows by setting its holding priority to 200, and the right to 199.
+        // Note: we keep the left split view item from growing as the window grows by setting its hugging priority to 200, and the right to 199.
         // The view with the lowest priority will be the first to take on additional width if the split view grows or shrinks.
         //
         
@@ -38,7 +38,7 @@ class MySplitViewController: NSSplitViewController {
         //
         self.outlineViewController.treeController.addObserver(self,
             forKeyPath: "selectedObjects",
-            options: .New,
+            options: .new,
             context: nil)
     }
     
@@ -76,7 +76,7 @@ class MySplitViewController: NSSplitViewController {
     // -------------------------------------------------------------------------------
     //	embedChildViewController:childViewController
     // -------------------------------------------------------------------------------
-    private func embedChildViewController(childViewController: NSViewController) {
+    private func embedChildViewController(_ childViewController: NSViewController) {
         // to embed a new child view controller we have to add it and its view, then setup auto layout contraints
         //
         let currentDetailVC = self.detailViewController
@@ -84,26 +84,26 @@ class MySplitViewController: NSSplitViewController {
         currentDetailVC.view.addSubview(childViewController.view)
         
         let views = ["targetView" : childViewController.view]
-        horizontalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:|[targetView]|",
+        horizontalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[targetView]|",
             options: [],
             metrics: nil,
             views: views)
-        verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:|[targetView]|",
+        verticalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[targetView]|",
             options: [],
             metrics: nil,
             views: views)
         
-        NSLayoutConstraint.activateConstraints(self.horizontalConstraints)
-        NSLayoutConstraint.activateConstraints(self.verticalConstraints)
+        NSLayoutConstraint.activate(self.horizontalConstraints)
+        NSLayoutConstraint.activate(self.verticalConstraints)
     }
     
     // -------------------------------------------------------------------------------
     //	observeValueForKeyPath:ofObject:change:context
     // -------------------------------------------------------------------------------
-    override func observeValueForKeyPath(keyPath: String?,
-        ofObject object: AnyObject?,
-        change: [String : AnyObject]?,
-        context: UnsafeMutablePointer<Void>)
+    override func observeValue(forKeyPath keyPath: String?,
+        of object: Any?,
+        change: [NSKeyValueChangeKey : Any]?,
+        context: UnsafeMutableRawPointer?)
     {
         if keyPath == "selectedObjects" {
             let currentDetailVC = self.detailViewController
@@ -116,7 +116,7 @@ class MySplitViewController: NSSplitViewController {
                     // the incoming child view controller is different from the one we currently have,
                     // remove the old one and add the new one
                     //
-                    currentDetailVC.removeChildViewControllerAtIndex(0)
+                    currentDetailVC.removeChildViewController(at: 0)
                     self.detailViewController.view.subviews[0].removeFromSuperview()
                     
                     self.embedChildViewController(vcForDetail)
@@ -129,7 +129,7 @@ class MySplitViewController: NSSplitViewController {
             } else {
                 // we don't have a child view controller to embed (no selection), so remove current child view controller
                 if self.hasChildViewController {
-                    currentDetailVC.removeChildViewControllerAtIndex(0)
+                    currentDetailVC.removeChildViewController(at: 0)
                     self.detailViewController.view.subviews[0].removeFromSuperview()
                 }
             }

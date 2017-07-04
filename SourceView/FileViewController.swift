@@ -6,7 +6,7 @@
 //
 //
 /*
- Copyright (C) 2016 Apple Inc. All Rights Reserved.
+ Copyright (C) 2017 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
 
  Abstract:
@@ -18,7 +18,7 @@ import Cocoa
 @objc(FileViewController)
 class FileViewController: NSViewController {
     
-    var url: NSURL?
+    var url: URL?
     
     @IBOutlet private var fileIcon: NSImageView!
     @IBOutlet private var fileName: NSTextField!
@@ -36,7 +36,7 @@ class FileViewController: NSViewController {
         // listen for changes in the url for this view
         self.addObserver(self,
             forKeyPath: "url",
-            options: [.New, .Old],
+            options: [.new, .old],
             context: nil)
     }
     
@@ -52,37 +52,38 @@ class FileViewController: NSViewController {
     //
     //	Listen for changes in the file url.
     // -------------------------------------------------------------------------------
-    override func observeValueForKeyPath(keyPath: String?,
-        ofObject object: AnyObject?,
-        change: [String : AnyObject]?,
-        context: UnsafeMutablePointer<Void>)
+    override func observeValue(forKeyPath keyPath: String?,
+        of object: Any?,
+        change: [NSKeyValueChangeKey : Any]?,
+        context: UnsafeMutableRawPointer?)
     {
-        if let url = self.url, path = url.path {
+        if let url = self.url {
+            let path = url.path
             // name
-            self.fileName.stringValue = NSFileManager.defaultManager().displayNameAtPath(path)
+            self.fileName.stringValue = FileManager.default.displayName(atPath: path)
             
             // icon
-            let iconImage = NSWorkspace.sharedWorkspace().iconForFile(path)
+            let iconImage = NSWorkspace.shared().icon(forFile: path)
             iconImage.size = NSMakeSize(64, 64)
             self.fileIcon.image = iconImage
-            if let attr = try? NSFileManager.defaultManager().attributesOfItemAtPath(path) {
+            if let attr = try? FileManager.default.attributesOfItem(atPath: path) {
                 // file size
-                let theFileSize = attr[NSFileSize] as! NSNumber
+                let theFileSize = attr[FileAttributeKey.size] as! NSNumber
                 self.fileSize.stringValue = "\(theFileSize.stringValue) KB on disk"
                 
                 // creation date
-                let fileCreationDate = attr[NSFileCreationDate] as! NSDate
+                let fileCreationDate = attr[FileAttributeKey.creationDate] as! Date
                 self.creationDate.stringValue = fileCreationDate.description
                 
                 // mod date
-                let fileModDate = attr[NSFileModificationDate] as! NSDate
+                let fileModDate = attr[FileAttributeKey.modificationDate] as! Date
                 self.modDate.stringValue = fileModDate.description
             }
             
             // kind string
-            var kindStr: AnyObject?
-            _ = try? url.getResourceValue(&kindStr, forKey: NSURLLocalizedTypeDescriptionKey)
-            if let str = kindStr as? String {
+            let resource = try? url.resourceValues(forKeys: [.localizedTypeDescriptionKey])
+            let kindStr = resource?.localizedTypeDescription
+            if let str = kindStr {
                 self.fileKindString.stringValue = str
             }
         } else {

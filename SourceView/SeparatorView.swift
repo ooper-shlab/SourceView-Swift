@@ -6,7 +6,7 @@
 //
 //
 /*
- Copyright (C) 2016 Apple Inc. All Rights Reserved.
+ Copyright (C) 2017 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
 
  Abstract:
@@ -17,7 +17,7 @@ import Cocoa
 @objc(SeparatorView)
 class SeparatorView: NSView {
     
-    override func drawRect(dirtyRect: NSRect) {
+    override func draw(_ dirtyRect: NSRect) {
         // draw the separator
         let lineWidth = dirtyRect.size.width - 2
         let lineX: CGFloat = 0

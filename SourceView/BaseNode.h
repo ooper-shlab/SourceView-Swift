@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 Apple Inc. All Rights Reserved.
+ Copyright (C) 2017 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
@@ -7,6 +7,9 @@
  */
 
 @interface BaseNode : NSObject <NSCoding, NSCopying>
+
+#define kIconSmallImageSize  16.
+#define kIconLargeImageSize  32.
 
 // default grouping titles
 + (NSString *)placesName;

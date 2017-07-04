@@ -17,6 +17,16 @@ import Cocoa
 import WebKit
 
 @objc(WebViewController)
-class WebViewController: NSViewController {
+class WebViewController: NSViewController, WebResourceLoadDelegate {
+    
+    func webView(_ sender: WebView!, resource identifier: Any!, didFailLoadingWithError error: Error!, from dataSource: WebDataSource!) {
+        if let error = error as NSError? {
+            // An error occurred, provide an error message to the user.
+            let page = error.userInfo[NSURLErrorFailingURLStringErrorKey] as! String
+            let errorContent = "<!DOCTYPE html><html><body><head></head><center><br><br><font color=red>Error: unable to load page:<br>'\(page)'</font></center></body></html>"
+            
+            sender.mainFrame.loadHTMLString(errorContent, baseURL: Bundle.main.bundleURL)
+        }
+    }
     
 }

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 Apple Inc. All Rights Reserved.
+ Copyright (C) 2017 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
@@ -10,7 +10,7 @@
 
 @property (nonatomic, strong) IBOutlet NSTreeController *treeController;
 
-// used to instruct which view controller to use as the detail when the outline view item is selected
+// Used to instruct which view controller to use as the detail when the outline view item is selected.
 - (NSViewController *)viewControllerForSelection:(NSArray *)selection;
 
 @end

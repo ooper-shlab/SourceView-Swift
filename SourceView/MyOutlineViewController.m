@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 Apple Inc. All Rights Reserved.
+ Copyright (C) 2017 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
@@ -19,9 +19,9 @@
 
 #define INITIAL_INFODICT		@"Outline"		// name of the dictionary file to populate our outline view
 
-#define ICONVIEW_IDENTIFIER		@"IconViewController"   // storyboard identifier for the icon view
-#define FILEVIEW_IDENTIFIER		@"FileViewController"   // storyboard identifier for the file view
-#define WEBVIEW_IDENTIFIER		@"WebViewController"    // storyboard identifier for the web view
+#define ICONVIEW_IDENTIFIER         @"IconViewController"       // storyboard identifier for the icon view
+#define FILEVIEW_IDENTIFIER         @"FileViewController"       // storyboard identifier for the file view
+#define WEBVIEW_IDENTIFIER          @"WebViewController"        // storyboard identifier for the web view
 
 #define CHILDEDIT_IDENTIFIER	@"ChildEditWindowController"	// storyboard identifier the child edit window controller
 
@@ -281,7 +281,7 @@
         }
         else
         {
-            node.nodeTitle = [[NSFileManager defaultManager] displayNameAtPath:[node.url absoluteString]];
+            node.nodeTitle = [[NSFileManager defaultManager] displayNameAtPath:node.url.absoluteString];
         }
 	}
 	
@@ -529,7 +529,7 @@
                 // return a view controller with a web view, retarget with "urlStr"
                 //
                 WebView *webView = (WebView *)self.webViewController.view;
-                webView.mainFrameURL = [node.url absoluteString];	// re-target to the new url
+                webView.mainFrameURL = node.url.absoluteString;	// re-target to the new url
                 
                 returnViewController = self.webViewController;
             }
@@ -552,7 +552,9 @@
         }
         else
         {
-            // no view controller (it's a group)
+            // it's a non-file system grouping of shortcuts
+            self.iconViewController.baseNode = node;
+            returnViewController = self.iconViewController;
         }
     }
     else
@@ -582,26 +584,31 @@
 - (NSView *)outlineView:(NSOutlineView *)outlineView viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
     NSTableCellView *result = [outlineView makeViewWithIdentifier:tableColumn.identifier owner:self];
-
+    
     BaseNode *node = [item representedObject];
     if (node != nil)
     {
         if ([self outlineView:outlineView isGroupItem:item])    // is it a special group (not a folder)?
         {
+            // Group items are sections of our outline that can be hidden/shown (i.e. PLACES/BOOKMARKS).
             NSString *identifier = outlineView.tableColumns[0].identifier;
             result = [outlineView makeViewWithIdentifier:identifier owner:self];
+            NSString *value = node.nodeTitle.uppercaseString;
+            result.textField.stringValue = value;
         }
         else if (node.isSeparator)
         {
-            // separators have no title or icon, just use the custom view to draw it
-            result = [outlineView makeViewWithIdentifier:SEPARATOR_VIEW owner:self];
+            // Separators have no title or icon, just use the custom view to draw it.
+            result = [outlineView makeViewWithIdentifier:@"Separator" owner:self];
         }
         else
         {
-            // only nodes with no URL or a http URL has it's name editable
-            if (node.url == nil || ![node.url isFileURL])
+            result.textField.stringValue = node.nodeTitle;
+            result.imageView.image = node.nodeIcon;
+            
+            if (node.isLeaf)
             {
-                result.textField.editable = YES;
+                [result.textField setEditable:YES]; // Just for fun, make leaf title's editable.
             }
         }
     }
@@ -732,12 +739,8 @@
 	//
 	NSArray* newNodes = self.dragNodesArray;
 
-	// move the items to their new place (we do this backwards, otherwise they will end up in reverse order)
-	NSInteger idx;
-	for (idx = (newNodes.count - 1); idx >= 0; idx--)
-	{
-		[self.treeController moveNode:newNodes[idx] toIndexPath:indexPath];
-	}
+	// move the items to their new place
+	[self.treeController moveNodes:self.dragNodesArray toIndexPath:indexPath];
 	
 	// keep the moved nodes selected
 	NSMutableArray *indexPathList = [NSMutableArray array];

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 Apple Inc. All Rights Reserved.
+ Copyright (C) 2017 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
@@ -9,8 +9,14 @@
 // notification for indicating file system content has been received
 extern NSString *kReceivedContentNotification;
 
+@class BaseNode;
+
 @interface IconViewController : NSViewController
 
+// This view controller can be populated two ways:
+//    file system url, or from a BaseNode of internet shortcuts
+//
 @property (readwrite, strong) NSURL *url;
-	
+@property (readwrite, strong) BaseNode *baseNode;
+
 @end

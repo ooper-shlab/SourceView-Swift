@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 Apple Inc. All Rights Reserved.
+ Copyright (C) 2017 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
@@ -7,47 +7,35 @@
  */
 
 #import "IconViewController.h"
-
-// key values for the icon view dictionary
-NSString *KEY_NAME = @"name";
-NSString *KEY_ICON = @"icon";
+#import "IconViewBox.h"
+#import "BaseNode.h"
 
 // notification for indicating file system content has been received
 NSString *kReceivedContentNotification = @"ReceivedContentNotification";
 
-@interface IconViewBox : NSBox
-@end
-@implementation IconViewBox
-- (NSView *)hitTest:(NSPoint)aPoint
-{
-	// don't allow any mouse clicks for subviews in this NSBox
-	return nil;
-}
-@end
-
-
-#pragma mark -
-
 @interface IconViewController ()
 
-@property (readwrite, strong) IBOutlet NSArrayController *iconArrayController;
 @property (readwrite, strong) NSMutableArray *icons;
 
 @end
 
 
+#pragma mark -
+
 @implementation IconViewController
+
+@synthesize baseNode = _baseNode;
 
 // -------------------------------------------------------------------------------
 //	awakeFromNib
 // -------------------------------------------------------------------------------
 - (void)awakeFromNib
 {
-	// listen for changes in the url for this view
-	[self addObserver:	self
-						forKeyPath:@"url"
-						options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) 
-						context:nil];
+	// Listen for changes in the url for this view.
+	[self addObserver:self
+           forKeyPath:@"url"
+              options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld)
+              context:nil];
 }
 
 // -------------------------------------------------------------------------------
@@ -56,6 +44,24 @@ NSString *kReceivedContentNotification = @"ReceivedContentNotification";
 - (void)dealloc
 {
 	[self removeObserver:self forKeyPath:@"url"];
+}
+
+// -------------------------------------------------------------------------------
+//	setBaseNode:baseNode
+// -------------------------------------------------------------------------------
+- (void)setBaseNode:(BaseNode *)baseNode
+{
+    // Our base node has changed, notify ourselves to update our data source.
+    _baseNode = baseNode;
+    [self gatherContents:baseNode];
+}
+
+// -------------------------------------------------------------------------------
+//	baseNode
+// -------------------------------------------------------------------------------
+- (BaseNode *)baseNode
+{
+    return _baseNode;
 }
 
 // -------------------------------------------------------------------------------
@@ -82,30 +88,53 @@ NSString *kReceivedContentNotification = @"ReceivedContentNotification";
 	
         NSMutableArray *contentArray = [[NSMutableArray alloc] init];
         
-        NSArray *fileURLs = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:self.url
-                                                          includingPropertiesForKeys:@[]
-                                                                             options:0
-                                                                        error:nil];
-        if (fileURLs != nil)
+        if ([inObject isKindOfClass:[BaseNode class]])
         {
-            for (NSURL *element in fileURLs)
+            // We are populating our collection view with a set of internet shortcuts from our baseNode.
+            //
+            NSArray *shortcuts = self.baseNode.children;
+            for (BaseNode *node in shortcuts)
             {
-                NSImage *elementIcon = [[NSWorkspace sharedWorkspace] iconForFile:element.path];
-
-                // only allow visible objects
-                NSNumber *hiddenFlag = nil;
-                if ([element getResourceValue:&hiddenFlag forKey:NSURLIsHiddenKey error:nil])
+                // the node's icon was set to a smaller size before, for this collection view we need to make it bigger
+                NSImage *shortcutIcon = [node.nodeIcon copy];
+                shortcutIcon.size = NSMakeSize(kIconLargeImageSize, kIconLargeImageSize);
+                
+                [contentArray addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                            shortcutIcon, KEY_ICON,
+                                            node.nodeTitle, KEY_NAME,
+                                         nil]];
+            }
+        }
+        else
+        {
+            // We are populating our collection view with a file system directory URL.
+            //
+            NSURL *urlToDirectory = inObject;
+            NSArray *fileURLs = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:urlToDirectory
+                                                              includingPropertiesForKeys:@[]
+                                                                                 options:0
+                                                                                   error:nil];
+            if (fileURLs != nil)
+            {
+                for (NSURL *element in fileURLs)
                 {
-                    if (!hiddenFlag.boolValue)
+                    NSImage *elementIcon = [[NSWorkspace sharedWorkspace] iconForFile:element.path];
+
+                    // only allow visible objects
+                    NSNumber *hiddenFlag = nil;
+                    if ([element getResourceValue:&hiddenFlag forKey:NSURLIsHiddenKey error:nil])
                     {
-                        NSString *elementNameStr = nil;
-                        if ([element getResourceValue:&elementNameStr forKey:NSURLLocalizedNameKey error:nil])
+                        if (!hiddenFlag.boolValue)
                         {
-                            // file system object is visible so add to our array
-                            [contentArray addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                                        elementIcon, KEY_ICON,
-                                                        elementNameStr, KEY_NAME,
-                                                     nil]];
+                            NSString *elementNameStr = nil;
+                            if ([element getResourceValue:&elementNameStr forKey:NSURLLocalizedNameKey error:nil])
+                            {
+                                // file system object is visible so add to our array
+                                [contentArray addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                                            elementIcon, KEY_ICON,
+                                                            elementNameStr, KEY_NAME,
+                                                         nil]];
+                            }
                         }
                     }
                 }
@@ -116,6 +145,9 @@ NSString *kReceivedContentNotification = @"ReceivedContentNotification";
         [self performSelectorOnMainThread:@selector(updateIcons:) withObject:contentArray waitUntilDone:YES];
 	}
 }
+
+
+#pragma mark - KVO
 
 // -------------------------------------------------------------------------------
 //	observeValueForKeyPath:ofObject:change:context
@@ -128,12 +160,12 @@ NSString *kReceivedContentNotification = @"ReceivedContentNotification";
 								change:(NSDictionary *)change 
 								context:(void *)context
 {
-	// build our directory contents on a separate thread,
-	// some portions are from disk which could get expensive depending on the size
+    // build our directory contents on a separate thread,
+    // some portions are from disk which could get expensive depending on the size
     //
-	[NSThread detachNewThreadSelector:	@selector(gatherContents:)
-										toTarget:self		// we are the target
-										withObject:self.url];
+    [NSThread detachNewThreadSelector:	@selector(gatherContents:)
+                                        toTarget:self // we are the target
+                                        withObject:self.url];
 }
 
 @end

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 Apple Inc. All Rights Reserved.
+ Copyright (C) 2017 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
@@ -8,9 +8,8 @@
 
 #import "BaseNode.h"
 
-#define kIconImageSize      16.
-#define PLACES_NAME         @"PLACES"
-#define BOOKMARKS_NAME      @"BOOKMARKS"
+#define PLACES_NAME             @"PLACES"
+#define BOOKMARKS_NAME          @"BOOKMARKS"
 
 
 @implementation BaseNode
@@ -80,7 +79,7 @@
     BOOL isBookmark = NO;
     if (self.url != nil)
     {
-        return ![self.url isFileURL];
+        return !self.url.fileURL;
     }
     return isBookmark;
 }
@@ -161,25 +160,25 @@
                 }
                 else
                 {
-                    icon = [[NSWorkspace sharedWorkspace] iconForFile:[self.url path]];
+                    icon = [[NSWorkspace sharedWorkspace] iconForFile:self.url.path];
                 }
             }
             else
             {
-                icon = [[NSWorkspace sharedWorkspace] iconForFile:[self.url path]];
+                icon = [[NSWorkspace sharedWorkspace] iconForFile:self.url.path];
             }
         }
         else
         {
             // it's a separator, don't bother with the icon
         }
-        icon.size = NSMakeSize(kIconImageSize, kIconImageSize);
+        icon.size = NSMakeSize(kIconSmallImageSize, kIconSmallImageSize);
     }
     else if (!self.isSpecialGroup)
     {
         // it's a folder, use the folderImage as its icon
         icon = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
-        icon.size = NSMakeSize(kIconImageSize, kIconImageSize);
+        icon.size = NSMakeSize(kIconSmallImageSize, kIconSmallImageSize);
     }
     
     return icon;

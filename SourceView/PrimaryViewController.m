@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 Apple Inc. All Rights Reserved.
+ Copyright (C) 2017 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
@@ -42,7 +42,7 @@ NSString *kEditBookmarkNotification = @"EditBookmarkNotification";
 // -------------------------------------------------------------------------------
 - (void)viewDidLoad
 {
-    // Note: we keep the left split view item from growing as the window grows by setting its holding priority to 200,
+    // Note: we keep the left split view item from growing as the window grows by setting its hugging priority to 200,
     // and the right to 199. The view with the lowest priority will be the first to take on additional width if the
     // split view grows or shrinks.
     //
@@ -129,13 +129,13 @@ NSString *kEditBookmarkNotification = @"EditBookmarkNotification";
     }
     else
     {
-        // single selection
+        // single selection only
         self.removeButton.enabled = YES;
         
         // report the URL to our NSTextField
         BaseNode *item = [[outlineView itemAtRow:selectedRow] representedObject];
         
-        if ([item isBookmark])
+        if (item.isBookmark)
         {
             self.urlField.stringValue = (item.url != nil) ? item.url.absoluteString : @"";
         }
@@ -146,7 +146,7 @@ NSString *kEditBookmarkNotification = @"EditBookmarkNotification";
         }
         
         // enable the Edit... menu item if the selected node is a bookmark
-        self.editBookmarkMenuItem.enabled = ![item.url isFileURL];
+        self.editBookmarkMenuItem.enabled = (item.url != nil) && !item.url.fileURL;
         
         if (item.isDirectory)
         {
@@ -174,8 +174,17 @@ NSString *kEditBookmarkNotification = @"EditBookmarkNotification";
 // -------------------------------------------------------------------------------
 - (IBAction)removeFolderAction:(id)sender
 {
-    // post notification to MyOutlineViewController to remove the selected folder
-    [[NSNotificationCenter defaultCenter] postNotificationName:kRemoveFolderNotification object:nil];
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = NSLocalizedString(@"Are you sure you want to remove this item?", @"");
+    [alert addButtonWithTitle:NSLocalizedString(@"OK", @"")];
+    [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"")];
+    [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse returnCode) {
+        if (returnCode == NSAlertFirstButtonReturn)
+        {
+            // post notification to MyOutlineViewController to remove the selected folder
+            [[NSNotificationCenter defaultCenter] postNotificationName:kRemoveFolderNotification object:nil];
+        }
+    }];
 }
 
 

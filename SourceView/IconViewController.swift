@@ -18,19 +18,9 @@ import Cocoa
 // notification for indicating file system content has been received
 let kReceivedContentNotification = "ReceivedContentNotification"
 
-// key values for the icon view dictionary
+// Key values for the icon view dictionary.
 private let KEY_NAME = "name"
 private let KEY_ICON = "icon"
-
-// notification for indicating file system content has been received
-
-@objc(IconViewBox)
-class IconViewBox: NSBox {
-    override func hitTest(aPoint: NSPoint) -> NSView? {
-        // don't allow any mouse clicks for subviews in this NSBox
-        return nil
-    }
-}
 
 
 //MARK: -
@@ -38,22 +28,29 @@ class IconViewBox: NSBox {
 @objc(IconViewController)
 class IconViewController: NSViewController {
     
-    dynamic var url: NSURL?
+    // This view controller can be populated two ways:
+    //    file system url, or from a BaseNode of internet shortcuts
+    //
+    dynamic var url: URL?
+    var baseNode: BaseNode? {
+        didSet {didSetBaseNode(oldValue)}
+    }
     
-    @IBOutlet private var iconArrayController: NSArrayController!
-    dynamic var icons: [AnyObject] = []
+    @objc dynamic var icons: [[String: Any]] = []
     
+    
+    //MARK: -
     
     // -------------------------------------------------------------------------------
     //	awakeFromNib
     // -------------------------------------------------------------------------------
     override func awakeFromNib() {
-        // listen for changes in the url for this view
+        // Listen for changes in the url for this view.
         //###Neither the receiver, nor anObserver, are retained.
         self.addObserver(self,
-            forKeyPath: "url",
-            options: [.New, .Old],
-            context: nil)
+                         forKeyPath: "url",
+                         options: [.new, .old],
+                         context: nil)
     }
     
     // -------------------------------------------------------------------------------
@@ -64,14 +61,22 @@ class IconViewController: NSViewController {
     }
     
     // -------------------------------------------------------------------------------
+    //	setBaseNode:baseNode
+    // -------------------------------------------------------------------------------
+    private func didSetBaseNode(_ oldBaseNode: BaseNode?) {
+        // Our base node has changed, notify ourselves to update our data source.
+        self.gatherContents(baseNode!)
+    }
+    
+    // -------------------------------------------------------------------------------
     //	updateIcons:iconArray
     //
     //	The incoming object is the NSArray of file system objects to display.
     //-------------------------------------------------------------------------------
-    private func updateIcons(iconArray: [AnyObject]) {
+    private func updateIcons(_ iconArray: [[String: Any]]) {
         self.icons = iconArray
         
-        NSNotificationCenter.defaultCenter().postNotificationName(kReceivedContentNotification, object: nil)
+        NotificationCenter.default.post(name: Notification.Name(kReceivedContentNotification), object: nil)
     }
     
     // -------------------------------------------------------------------------------
@@ -80,38 +85,58 @@ class IconViewController: NSViewController {
     //	Gathering the contents and their icons could be expensive.
     //	This method is being called on a separate thread to avoid blocking the UI.
     // -------------------------------------------------------------------------------
-    private func gatherContents(inObject: NSURL) {
-        var contentArray: [AnyObject] = []
+    private func gatherContents(_ inObject: Any) {
+        var contentArray: [[String: Any]] = []
         autoreleasepool {
             
-            do {
-                let fileURLs = try NSFileManager.defaultManager().contentsOfDirectoryAtURL(self.url!,
-                    includingPropertiesForKeys: [],
-                    options: [])
-                for element in fileURLs {
-                    let elementIcon = NSWorkspace.sharedWorkspace().iconForFile(element.path!)
+            if inObject is BaseNode {
+                // We are populating our collection view with a set of internet shortcuts from our baseNode.
+                //
+                let shortcuts = self.baseNode!.children
+                for node in shortcuts {
+                    // the node's icon was set to a smaller size before, for this collection view we need to make it bigger
+                    let shortcutIcon = node.nodeIcon!.copy() as! NSImage
+                    shortcutIcon.size = NSMakeSize(kIconLargeImageSize, kIconLargeImageSize)
                     
-                    // only allow visible objects
-                    var hiddenFlag: AnyObject? = nil
-                    try element.getResourceValue(&hiddenFlag, forKey: NSURLIsHiddenKey)
-                    if !(hiddenFlag as! Bool) {
-                        var elementNameStr: AnyObject? = nil
-                        try element.getResourceValue(&elementNameStr, forKey: NSURLLocalizedNameKey)
-                        // file system object is visible so add to our array
-                        contentArray.append([
-                            "icon": elementIcon,
-                            "name": elementNameStr as! String
-                            ])
-                    }
+                    contentArray.append([
+                        KEY_ICON: shortcutIcon,
+                        KEY_NAME: node.nodeTitle
+                        ])
                 }
-            } catch _ {}
+            } else {
+                // We are populating our collection view with a file system directory URL.
+                //
+                let urlToDirectory = inObject as! URL
+                do {
+                    let fileURLs = try FileManager.default.contentsOfDirectory(at: urlToDirectory,
+                                                                               includingPropertiesForKeys: [], options: [])
+                    for element in fileURLs {
+                        let elementIcon = NSWorkspace.shared().icon(forFile: element.path)
+                        
+                        // only allow visible objects
+                        let resource = try element.resourceValues(forKeys: [.isHiddenKey, .localizedNameKey])
+                        let isHidden = resource.isHidden!
+                        if !isHidden {
+                            let elementNameStr = resource.localizedName!
+                            // file system object is visible so add to our array
+                            contentArray.append([
+                                KEY_ICON: elementIcon,
+                                KEY_NAME: elementNameStr
+                                ])
+                        }
+                    }
+                } catch _ {}
+            }
             
             // call back on the main thread to update the icons in our view
-            dispatch_sync(dispatch_get_main_queue()) {
+            DispatchQueue.main.sync {
                 self.updateIcons(contentArray)
             }
         }
     }
+    
+    
+    //MARK: - KVO
     
     // -------------------------------------------------------------------------------
     //	observeValueForKeyPath:ofObject:change:context
@@ -119,15 +144,15 @@ class IconViewController: NSViewController {
     //	Listen for changes in the file url.
     //	Given a url, obtain its contents and add only the invisible items to the collection.
     // -------------------------------------------------------------------------------
-    override func observeValueForKeyPath(keyPath: String?,
-        ofObject object: AnyObject?,
-        change: [String : AnyObject]?,
-        context: UnsafeMutablePointer<Void>)
+    override func observeValue(forKeyPath keyPath: String?,
+                               of object: Any?,
+                               change: [NSKeyValueChangeKey : Any]?,
+                               context: UnsafeMutableRawPointer?)
     {
         // build our directory contents on a separate thread,
         // some portions are from disk which could get expensive depending on the size
         //
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        DispatchQueue.global(qos: .default).async {
             self.gatherContents(self.url!)
         }
     }

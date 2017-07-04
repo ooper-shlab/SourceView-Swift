@@ -6,7 +6,7 @@
 //
 //
 /*
- Copyright (C) 2016 Apple Inc. All Rights Reserved.
+ Copyright (C) 2017 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
 
  Abstract:
@@ -21,7 +21,7 @@ let kURL_Key = "url"
 @objc(ChildEditViewController)
 class ChildEditViewController: NSViewController {
     
-    var savedValues: [String: AnyObject] = [:]
+    var savedValues: [String: Any] = [:]
     
     @IBOutlet private weak var doneButton: NSButton!
     @IBOutlet private weak var nameField: NSTextField!
@@ -37,8 +37,8 @@ class ChildEditViewController: NSViewController {
         super.viewWillAppear()
         
         self.nameField.stringValue = self.savedValues[kName_Key] as! String? ?? ""
-        self.urlField.stringValue = (self.savedValues[kURL_Key] as! NSURL?)?.absoluteString ?? ""
-        self.doneButton.enabled = self.doneAllowed
+        self.urlField.stringValue = String(describing: self.savedValues[kURL_Key] ?? "")
+        self.doneButton.isEnabled = self.doneAllowed
     }
     
     // -------------------------------------------------------------------------------
@@ -59,8 +59,8 @@ class ChildEditViewController: NSViewController {
             urlStr = self.urlField.stringValue
         }
         savedValues = [
-            kName_Key : self.nameField.stringValue,
-            kURL_Key : NSURL(string: urlStr)!
+            kName_Key : self.nameField.stringValue as AnyObject,
+            kURL_Key : URL(string: urlStr)! as AnyObject
         ]
         self.clearValues()
         
@@ -88,8 +88,8 @@ class ChildEditViewController: NSViewController {
     //
     //  For this to be called, we need to be a delegate to both NSTextFields
     // -------------------------------------------------------------------------------
-    override func controlTextDidChange(obj: NSNotification) {
-        self.doneButton.enabled = self.doneAllowed
+    override func controlTextDidChange(_ obj: Notification) {
+        self.doneButton.isEnabled = self.doneAllowed
     }
     
 }

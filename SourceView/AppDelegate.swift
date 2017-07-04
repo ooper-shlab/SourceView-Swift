@@ -6,7 +6,7 @@
 //
 //
 /*
- Copyright (C) 2016 Apple Inc. All Rights Reserved.
+ Copyright (C) 2017 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
 
  Abstract:
@@ -25,7 +25,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     //	NSApplication delegate method placed here so the sample conveniently quits
     //	after we close the window.
     // -------------------------------------------------------------------------------
-    func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return true
     }
     

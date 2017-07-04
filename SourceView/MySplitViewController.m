@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 Apple Inc. All Rights Reserved.
+ Copyright (C) 2017 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
  
  Abstract:
@@ -28,7 +28,7 @@
 {
     [super viewDidAppear];
     
-    // Note: we keep the left split view item from growing as the window grows by setting its holding priority to 200, and the right to 199.
+    // Note: we keep the left split view item from growing as the window grows by setting its hugging priority to 200, and the right to 199.
     // The view with the lowest priority will be the first to take on additional width if the split view grows or shrinks.
     //
     
@@ -36,9 +36,9 @@
     // note: we start observing after our outline view is populated so we don't receive unnecessary notifications at startup
     //
     [self.outlineViewController.treeController addObserver:self
-                                                  forKeyPath:@"selectedObjects"
-                                                     options:NSKeyValueObservingOptionNew
-                                                     context:nil];
+                                                forKeyPath:@"selectedObjects"
+                                                   options:NSKeyValueObservingOptionNew
+                                                   context:nil];
 }
 
 - (void)dealloc

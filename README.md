@@ -20,11 +20,11 @@ Among the features demonstrated are -
 
 ## Build Requirements
 
-OS X 10.10.x SDK or later
+macOS 10.12 SDK or later
 
 ## Runtime Requirements
 
-OS X 10.10.x or later
+OS X 10.10 or later
 
 ## Using the Sample
 
@@ -32,4 +32,4 @@ The Bookmarks section is determined the external Outline.dict file, read in as a
 You can experiment on your own with adding and removing items in this file.
 
 
-Copyright (C) 2007-2016, Apple Inc. All rights reserved.
+Copyright (C) 2007-2017, Apple Inc. All rights reserved.
