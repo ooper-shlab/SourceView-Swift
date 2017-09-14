@@ -72,13 +72,13 @@ class PrimaryViewController: NSViewController {
         // note: we start observing after our outline view is populated so we don't receive unnecessary notifications at startup
         //
         NotificationCenter.default.addObserver(self,
-            selector: #selector(PrimaryViewController.selectionDidChange(_:)),
+            selector: #selector(self.selectionDidChange(_:)),
             name: .NSOutlineViewSelectionDidChange,
             object: nil)
         
         // notification so we know when the icon view controller is done populating its content
         NotificationCenter.default.addObserver(self,
-            selector: #selector(PrimaryViewController.contentReceived(_:)),
+            selector: #selector(self.contentReceived(_:)),
             name: Notification.Name(kReceivedContentNotification),
             object: nil)
     }
@@ -126,10 +126,10 @@ class PrimaryViewController: NSViewController {
             let item = (outlineView.item(atRow: selectedRow)! as AnyObject).representedObject as! BaseNode
             
             if item.isBookmark {
-                self.urlField.stringValue = item.url?.absoluteString ?? "";
+                self.urlField.stringValue = item.url?.absoluteString ?? ""
             } else {
                 
-                self.urlField.stringValue = item.url?.path ?? "";
+                self.urlField.stringValue = item.url?.path ?? ""
             }
             
             // enable the Edit... menu item if the selected node is a bookmark
@@ -151,7 +151,7 @@ class PrimaryViewController: NSViewController {
     // -------------------------------------------------------------------------------
     @IBAction func addFolderAction(_: AnyObject) {
         // post notification to MyOutlineViewController to add a new folder
-        NotificationCenter.default.post(name: Notification.Name(rawValue: kAddFolderNotification), object: nil)
+        NotificationCenter.default.post(name: Notification.Name(kAddFolderNotification), object: nil)
     }
     
     // -------------------------------------------------------------------------------
@@ -159,13 +159,13 @@ class PrimaryViewController: NSViewController {
     // -------------------------------------------------------------------------------
     @IBAction func removeFolderAction(_: AnyObject) {
         let alert = NSAlert()
-        alert.messageText = NSLocalizedString("Are you sure you want to remove this item?", comment: "");
+        alert.messageText = NSLocalizedString("Are you sure you want to remove this item?", comment: "")
         alert.addButton(withTitle: NSLocalizedString("OK", comment: ""))
         alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
         alert.beginSheetModal(for: self.view.window!) {returnCode in
             if returnCode == NSAlertFirstButtonReturn {
                 // post notification to MyOutlineViewController to remove the selected folder
-                NotificationCenter.default.post(name: Notification.Name(rawValue: kRemoveFolderNotification), object: nil)
+                NotificationCenter.default.post(name: Notification.Name(kRemoveFolderNotification), object: nil)
             }
         }
     }

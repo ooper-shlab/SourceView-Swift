@@ -43,8 +43,6 @@
 		D7461FFB1F0B0FED00AFF899 /* ChildNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChildNode.swift; path = SourceView/ChildNode.swift; sourceTree = "<group>"; };
 		D7461FFE1F0B15FF00AFF899 /* ChildEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChildEditViewController.swift; path = SourceView/ChildEditViewController.swift; sourceTree = "<group>"; };
 		D7461FFF1F0B15FF00AFF899 /* SeparatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SeparatorView.swift; path = SourceView/SeparatorView.swift; sourceTree = "<group>"; };
-		D74620021F0B48D600AFF899 /* MySplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MySplitViewController.h; path = SourceView/MySplitViewController.h; sourceTree = "<group>"; };
-		D74620031F0B48D600AFF899 /* MySplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MySplitViewController.m; path = SourceView/MySplitViewController.m; sourceTree = "<group>"; };
 		D74620051F0B515100AFF899 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		D74620061F0B515100AFF899 /* README2.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README2.md; sourceTree = "<group>"; };
 		D789D6361F0AF5200080B9CB /* Prefix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Prefix.swift; sourceTree = "<group>"; };
@@ -95,8 +93,6 @@
 		29B97315FDCFA39411CA2CEA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				D74620021F0B48D600AFF899 /* MySplitViewController.h */,
-				D74620031F0B48D600AFF899 /* MySplitViewController.m */,
 				D789D6361F0AF5200080B9CB /* Prefix.swift */,
 				D789D6381F0AF5870080B9CB /* AppDelegate.swift */,
 				D789D63B1F0AF5870080B9CB /* MyWindowController.swift */,

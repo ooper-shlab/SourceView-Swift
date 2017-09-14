@@ -73,6 +73,7 @@ class IconViewController: NSViewController {
     //
     //	The incoming object is the NSArray of file system objects to display.
     //-------------------------------------------------------------------------------
+    //@objc
     private func updateIcons(_ iconArray: [[String: Any]]) {
         self.icons = iconArray
         
@@ -86,8 +87,9 @@ class IconViewController: NSViewController {
     //	This method is being called on a separate thread to avoid blocking the UI.
     // -------------------------------------------------------------------------------
     private func gatherContents(_ inObject: Any) {
-        var contentArray: [[String: Any]] = []
         autoreleasepool {
+            
+            var contentArray: [[String: Any]] = []
             
             if inObject is BaseNode {
                 // We are populating our collection view with a set of internet shortcuts from our baseNode.
@@ -129,9 +131,12 @@ class IconViewController: NSViewController {
             }
             
             // call back on the main thread to update the icons in our view
-            DispatchQueue.main.sync {
+            //### Seems DispatchQueue.main.sync does not work as performSelector(onMainThread:with:waitUntilDone:)
+            //### DispatchQueue.main.async does not `waitUntilDone`, but enough for updating icons...
+            DispatchQueue.main.async {
                 self.updateIcons(contentArray)
             }
+//            self.performSelector(onMainThread: #selector(updateIcons(_:)), with: contentArray, waitUntilDone: true)
         }
     }
     

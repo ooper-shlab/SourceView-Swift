@@ -169,11 +169,11 @@ class BaseNode: NSObject, NSCoding, NSCopying {
             } else {
                 // it's a separator, don't bother with the icon
             }
-            icon?.size = NSMakeSize(kIconSmallImageSize, kIconSmallImageSize);
+            icon?.size = NSMakeSize(kIconSmallImageSize, kIconSmallImageSize)
         } else if !self.isSpecialGroup {
             // it's a folder, use the folderImage as its icon
             icon = NSWorkspace.shared().icon(forFileType: NSFileTypeForHFSTypeCode(OSType(kGenericFolderIcon)))
-            icon!.size = NSMakeSize(kIconSmallImageSize, kIconSmallImageSize);
+            icon!.size = NSMakeSize(kIconSmallImageSize, kIconSmallImageSize)
         }
     
         return icon;

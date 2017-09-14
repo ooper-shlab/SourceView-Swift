@@ -127,24 +127,24 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
         
         // notification to add a folder
         NotificationCenter.default.addObserver(self,
-            selector: #selector(MyOutlineViewController.addFolder(_:)),
+            selector: #selector(self.addFolder(_:)),
             name: Notification.Name(kAddFolderNotification),
             object: nil)
         // notification to remove a folder
         NotificationCenter.default.addObserver(self,
-            selector: #selector(MyOutlineViewController.removeFolder(_:)),
+            selector: #selector(self.removeFolder(_:)),
             name: Notification.Name(kRemoveFolderNotification),
             object: nil)
         
         // notification to add a bookmark
         NotificationCenter.default.addObserver(self,
-            selector: #selector(MyOutlineViewController.addBookmark(_:)),
+            selector: #selector(self.addBookmark(_:)),
             name: Notification.Name(kAddBookmarkNotification),
             object: nil)
         
         // notification to edit a bookmark
         NotificationCenter.default.addObserver(self,
-            selector: #selector(MyOutlineViewController.editBookmark(_:)),
+            selector: #selector(self.editBookmark(_:)),
             name: Notification.Name(kEditBookmarkNotification),
             object: nil)
     }
@@ -485,8 +485,8 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
                 }
             } else {
                 // it's a non-file system grouping of shortcuts
-                self.iconViewController.baseNode = node;
-                returnViewController = self.iconViewController;
+                self.iconViewController.baseNode = node
+                returnViewController = self.iconViewController
             }
         } else {
             // no view controller (no selection)
