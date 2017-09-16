@@ -97,13 +97,15 @@ class IconViewController: NSViewController {
                 let shortcuts = self.baseNode!.children
                 for node in shortcuts {
                     // the node's icon was set to a smaller size before, for this collection view we need to make it bigger
-                    let shortcutIcon = node.nodeIcon!.copy() as! NSImage
-                    shortcutIcon.size = NSMakeSize(kIconLargeImageSize, kIconLargeImageSize)
-                    
-                    contentArray.append([
-                        KEY_ICON: shortcutIcon,
+                    var content: [String: Any] = [
                         KEY_NAME: node.nodeTitle
-                        ])
+                    ]
+                    if let shortcutIcon = node.nodeIcon?.copy() as! NSImage? {
+                        shortcutIcon.size = NSMakeSize(kIconLargeImageSize, kIconLargeImageSize)
+                        content[KEY_ICON] = shortcutIcon
+                    }
+                    
+                    contentArray.append(content)
                 }
             } else {
                 // We are populating our collection view with a file system directory URL.

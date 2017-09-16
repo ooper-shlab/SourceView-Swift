@@ -176,7 +176,7 @@ class BaseNode: NSObject, NSCoding, NSCopying {
             icon!.size = NSMakeSize(kIconSmallImageSize, kIconSmallImageSize)
         }
     
-        return icon;
+        return icon
     }
     
     
