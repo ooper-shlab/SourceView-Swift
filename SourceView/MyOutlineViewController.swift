@@ -529,6 +529,13 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
                 
                 if node.isLeaf {
                     (result as! NSTableCellView).textField!.isEditable = true // Just for fun, make leaf title's editable.
+                    //### Translator's extra
+                    (result as! NSTableCellView).textField!.target = self
+                    (result as! NSTableCellView).textField!.action = #selector(self.didEditTextField(_:))
+                } else {
+                    //### actually needs to reset some properties for reuse...
+                    //### keeping 'do nothing' as in the original sample code.
+                    //(result as! NSTableCellView).textField!.isEditable = false
                 }
             }
         }
@@ -769,4 +776,10 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
         return result
     }
     
+    //MARK: - ### Translator's extra
+    @objc func didEditTextField(_ sender: NSTextField) {
+        if let selectedItem = myOutlineView.item(atRow: myOutlineView.selectedRow) as? NSTreeNode {
+            (selectedItem.representedObject as! BaseNode).nodeTitle = sender.stringValue
+        }
+    }
 }
