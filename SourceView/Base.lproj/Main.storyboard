@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12121"/>
-        <plugIn identifier="com.apple.WebKitIBPlugin" version="12121"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="13771"/>
         <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -659,6 +660,9 @@
                         <rect key="contentRect" x="125" y="641" width="250" height="300"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
                         <value key="minSize" type="size" width="250" height="300"/>
+                        <connections>
+                            <outlet property="delegate" destination="B8D-0N-5wS" id="ImG-ag-5oI"/>
+                        </connections>
                     </window>
                     <connections>
                         <segue destination="5lp-pB-A0a" kind="relationship" relationship="window.shadowedContentViewController" id="LFk-6M-QpT"/>
@@ -714,7 +718,7 @@
                             <popUpButton horizontalHuggingPriority="249" verticalHuggingPriority="750" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="cPl-48-obv" userLabel="Action Popup">
                                 <rect key="frame" x="61" y="4" width="42" height="21"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="42" id="FYy-2y-jAQ"/>
+                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="42" id="FYy-2y-jAQ"/>
                                 </constraints>
                                 <popUpButtonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" pullsDown="YES" preferredEdge="maxX" selectedItem="9na-yD-MC3" id="Zth-YV-Lf1">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -806,7 +810,7 @@
                         </connections>
                     </splitView>
                     <connections>
-                        <outlet property="view" destination="t9w-Zo-pSk" id="37R-2f-7WZ"/>
+                        <outlet property="splitView" destination="t9w-Zo-pSk" id="KRE-5C-Wtg"/>
                         <segue destination="wxf-YY-m1Q" kind="relationship" relationship="splitItems" id="C0c-tp-SSo"/>
                         <segue destination="7Im-CO-h25" kind="relationship" relationship="splitItems" id="8nr-UX-Pza"/>
                     </connections>
@@ -837,6 +841,9 @@
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="425" y="461" width="307" height="112"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+                        <connections>
+                            <outlet property="delegate" destination="pT6-63-Uco" id="Qup-GZ-nRq"/>
+                        </connections>
                     </window>
                     <connections>
                         <segue destination="yMA-RQ-SaI" kind="relationship" relationship="window.shadowedContentViewController" id="0m7-0V-oCB"/>

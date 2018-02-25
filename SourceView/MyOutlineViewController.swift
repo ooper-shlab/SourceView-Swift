@@ -6,7 +6,7 @@
 //
 //
 /*
- Copyright (C) 2017 Apple Inc. All Rights Reserved.
+ Copyright (C) 2018 Apple Inc. All Rights Reserved.
  See LICENSE.txt for this sample’s licensing information
 
  Abstract:
@@ -706,7 +706,7 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
                 if node.isBookmark {
                     // use the url portion without the prefix
                     let prefixRange = url.absoluteString.range(of: HTTP_PREFIX)!
-                    let newRange = prefixRange.upperBound..<url.absoluteString.characters.index(before: url.absoluteString.endIndex)
+                    let newRange = prefixRange.upperBound..<url.absoluteString.index(before: url.absoluteString.endIndex)
                     node.nodeTitle = url.absoluteString.substring(with: newRange)
                 } else {
                     // prefix unknown, just use the url as its title

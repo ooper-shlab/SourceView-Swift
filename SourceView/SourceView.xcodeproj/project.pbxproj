@@ -7,52 +7,64 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		532BAD031BA37AC800565C88 /* ChildEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 532BAD021BA37AC800565C88 /* ChildEditViewController.m */; };
 		533E9CF01BB1F4B900B904E0 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 533E9CEC1BB1F4B900B904E0 /* Credits.rtf */; };
 		533E9CF11BB1F4B900B904E0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 533E9CEE1BB1F4B900B904E0 /* InfoPlist.strings */; };
+		534BC1041BA8AC3D00E3766A /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 534BC1031BA8AC3D00E3766A /* WebViewController.m */; };
+		53512FAB1E7C735E006F6007 /* IconViewBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 53512FAA1E7C735E006F6007 /* IconViewBox.m */; };
+		5368DC9719DC605B003019C8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5368DC9519DC605B003019C8 /* AppDelegate.m */; };
+		5368DC9819DC605B003019C8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5368DC9619DC605B003019C8 /* main.m */; };
+		5368DC9F19DC6077003019C8 /* MyWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5368DC9D19DC6077003019C8 /* MyWindowController.m */; };
+		5368DCB019DC609A003019C8 /* BaseNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 5368DCAD19DC609A003019C8 /* BaseNode.m */; };
+		5368DCB119DC609A003019C8 /* ChildNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 5368DCAF19DC609A003019C8 /* ChildNode.m */; };
 		5368DCB619DC60AD003019C8 /* Outline.dict in Resources */ = {isa = PBXBuildFile; fileRef = 5368DCB419DC60AD003019C8 /* Outline.dict */; };
 		537D3D971CB571D000CB2D64 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 537D3D961CB571D000CB2D64 /* WebKit.framework */; };
+		5383D4541BA2016900014E51 /* FileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5383D4501BA2016900014E51 /* FileViewController.m */; };
+		5383D4551BA2016900014E51 /* IconViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5383D4521BA2016900014E51 /* IconViewController.m */; };
+		5383D4581BA20A2D00014E51 /* PrimaryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5383D4571BA20A2D00014E51 /* PrimaryViewController.m */; };
+		5383D45B1BA2152700014E51 /* MySplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5383D45A1BA2152700014E51 /* MySplitViewController.m */; };
 		53E207331BA0BEB000E45BA6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53E207311BA0BEB000E45BA6 /* Main.storyboard */; };
-		D787D5762042381F0097DC76 /* MyOutlineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787D5752042381F0097DC76 /* MyOutlineViewController.swift */; };
-		D787D57B204238B20097DC76 /* IconViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787D577204238B00097DC76 /* IconViewController.swift */; };
-		D787D57C204238B20097DC76 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787D578204238B10097DC76 /* WebViewController.swift */; };
-		D787D57D204238B20097DC76 /* FileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787D579204238B10097DC76 /* FileViewController.swift */; };
-		D787D57E204238B20097DC76 /* IconViewBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787D57A204238B10097DC76 /* IconViewBox.swift */; };
-		D787D583204239100097DC76 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787D57F2042390F0097DC76 /* AppDelegate.swift */; };
-		D787D584204239100097DC76 /* PrimaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787D5802042390F0097DC76 /* PrimaryViewController.swift */; };
-		D787D585204239100097DC76 /* MyWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787D581204239100097DC76 /* MyWindowController.swift */; };
-		D787D586204239100097DC76 /* MySplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787D582204239100097DC76 /* MySplitViewController.swift */; };
-		D787D5892042393F0097DC76 /* ChildNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787D5872042393F0097DC76 /* ChildNode.swift */; };
-		D787D58A2042393F0097DC76 /* BaseNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787D5882042393F0097DC76 /* BaseNode.swift */; };
-		D787D58D204239660097DC76 /* SeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787D58B204239640097DC76 /* SeparatorView.swift */; };
-		D787D58E204239660097DC76 /* ChildEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787D58C204239650097DC76 /* ChildEditViewController.swift */; };
-		D787D59020423B3C0097DC76 /* Prefix.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787D58F20423B3B0097DC76 /* Prefix.swift */; };
+		53E207361BA0BF8600E45BA6 /* MyOutlineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 53E207351BA0BF8600E45BA6 /* MyOutlineViewController.m */; };
+		53E207391BA0C4AB00E45BA6 /* SeparatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 53E207381BA0C4AB00E45BA6 /* SeparatorView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		532BAD011BA37AC800565C88 /* ChildEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChildEditViewController.h; path = SourceView/ChildEditViewController.h; sourceTree = "<group>"; };
+		532BAD021BA37AC800565C88 /* ChildEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ChildEditViewController.m; path = SourceView/ChildEditViewController.m; sourceTree = "<group>"; };
 		533E9CEB1BB1F3E700B904E0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = SourceView/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		533E9CED1BB1F4B900B904E0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Base; path = SourceView/Base.lproj/Credits.rtf; sourceTree = "<group>"; };
 		533E9CEF1BB1F4B900B904E0 /* Base */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Base; path = SourceView/Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		534BC1021BA8AC3D00E3766A /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WebViewController.h; path = SourceView/WebViewController.h; sourceTree = "<group>"; };
+		534BC1031BA8AC3D00E3766A /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WebViewController.m; path = SourceView/WebViewController.m; sourceTree = "<group>"; };
+		53512FA91E7C735E006F6007 /* IconViewBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IconViewBox.h; path = SourceView/IconViewBox.h; sourceTree = "<group>"; };
+		53512FAA1E7C735E006F6007 /* IconViewBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IconViewBox.m; path = SourceView/IconViewBox.m; sourceTree = "<group>"; };
 		5368DC9319DC604D003019C8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		5368DC9419DC605B003019C8 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = SourceView/AppDelegate.h; sourceTree = "<group>"; };
+		5368DC9519DC605B003019C8 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = SourceView/AppDelegate.m; sourceTree = "<group>"; };
+		5368DC9619DC605B003019C8 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = SourceView/main.m; sourceTree = "<group>"; };
+		5368DC9919DC6063003019C8 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Prefix.pch; path = SourceView/Prefix.pch; sourceTree = "<group>"; };
+		5368DC9C19DC6077003019C8 /* MyWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyWindowController.h; path = SourceView/MyWindowController.h; sourceTree = "<group>"; };
+		5368DC9D19DC6077003019C8 /* MyWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyWindowController.m; path = SourceView/MyWindowController.m; sourceTree = "<group>"; };
+		5368DCAC19DC609A003019C8 /* BaseNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseNode.h; path = SourceView/BaseNode.h; sourceTree = "<group>"; };
+		5368DCAD19DC609A003019C8 /* BaseNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BaseNode.m; path = SourceView/BaseNode.m; sourceTree = "<group>"; };
+		5368DCAE19DC609A003019C8 /* ChildNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChildNode.h; path = SourceView/ChildNode.h; sourceTree = "<group>"; };
+		5368DCAF19DC609A003019C8 /* ChildNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ChildNode.m; path = SourceView/ChildNode.m; sourceTree = "<group>"; };
 		5368DCB419DC60AD003019C8 /* Outline.dict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Outline.dict; path = SourceView/Outline.dict; sourceTree = "<group>"; };
 		5368DCB919DC60B8003019C8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = SourceView/Info.plist; sourceTree = "<group>"; };
 		537D3D961CB571D000CB2D64 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		5383D44F1BA2016900014E51 /* FileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileViewController.h; path = SourceView/FileViewController.h; sourceTree = "<group>"; };
+		5383D4501BA2016900014E51 /* FileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileViewController.m; path = SourceView/FileViewController.m; sourceTree = "<group>"; };
+		5383D4511BA2016900014E51 /* IconViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IconViewController.h; path = SourceView/IconViewController.h; sourceTree = "<group>"; };
+		5383D4521BA2016900014E51 /* IconViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IconViewController.m; path = SourceView/IconViewController.m; sourceTree = "<group>"; };
+		5383D4561BA20A2D00014E51 /* PrimaryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PrimaryViewController.h; path = SourceView/PrimaryViewController.h; sourceTree = "<group>"; };
+		5383D4571BA20A2D00014E51 /* PrimaryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PrimaryViewController.m; path = SourceView/PrimaryViewController.m; sourceTree = "<group>"; };
+		5383D4591BA2152700014E51 /* MySplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MySplitViewController.h; path = SourceView/MySplitViewController.h; sourceTree = "<group>"; };
+		5383D45A1BA2152700014E51 /* MySplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MySplitViewController.m; path = SourceView/MySplitViewController.m; sourceTree = "<group>"; };
+		53E207341BA0BF8600E45BA6 /* MyOutlineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyOutlineViewController.h; path = SourceView/MyOutlineViewController.h; sourceTree = "<group>"; };
+		53E207351BA0BF8600E45BA6 /* MyOutlineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyOutlineViewController.m; path = SourceView/MyOutlineViewController.m; sourceTree = "<group>"; };
+		53E207371BA0C4AB00E45BA6 /* SeparatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SeparatorView.h; path = SourceView/SeparatorView.h; sourceTree = "<group>"; };
+		53E207381BA0C4AB00E45BA6 /* SeparatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SeparatorView.m; path = SourceView/SeparatorView.m; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* SourceView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SourceView.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		D787D571204237640097DC76 /* README2.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README2.md; sourceTree = "<group>"; };
-		D787D572204237650097DC76 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
-		D787D5752042381F0097DC76 /* MyOutlineViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MyOutlineViewController.swift; path = SourceView/MyOutlineViewController.swift; sourceTree = "<group>"; };
-		D787D577204238B00097DC76 /* IconViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IconViewController.swift; path = SourceView/IconViewController.swift; sourceTree = "<group>"; };
-		D787D578204238B10097DC76 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebViewController.swift; path = SourceView/WebViewController.swift; sourceTree = "<group>"; };
-		D787D579204238B10097DC76 /* FileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FileViewController.swift; path = SourceView/FileViewController.swift; sourceTree = "<group>"; };
-		D787D57A204238B10097DC76 /* IconViewBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IconViewBox.swift; path = SourceView/IconViewBox.swift; sourceTree = "<group>"; };
-		D787D57F2042390F0097DC76 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = SourceView/AppDelegate.swift; sourceTree = "<group>"; };
-		D787D5802042390F0097DC76 /* PrimaryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PrimaryViewController.swift; path = SourceView/PrimaryViewController.swift; sourceTree = "<group>"; };
-		D787D581204239100097DC76 /* MyWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MyWindowController.swift; path = SourceView/MyWindowController.swift; sourceTree = "<group>"; };
-		D787D582204239100097DC76 /* MySplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MySplitViewController.swift; path = SourceView/MySplitViewController.swift; sourceTree = "<group>"; };
-		D787D5872042393F0097DC76 /* ChildNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChildNode.swift; path = SourceView/ChildNode.swift; sourceTree = "<group>"; };
-		D787D5882042393F0097DC76 /* BaseNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BaseNode.swift; path = SourceView/BaseNode.swift; sourceTree = "<group>"; };
-		D787D58B204239640097DC76 /* SeparatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SeparatorView.swift; path = SourceView/SeparatorView.swift; sourceTree = "<group>"; };
-		D787D58C204239650097DC76 /* ChildEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChildEditViewController.swift; path = SourceView/ChildEditViewController.swift; sourceTree = "<group>"; };
-		D787D58F20423B3B0097DC76 /* Prefix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Prefix.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,9 +90,7 @@
 		29B97314FDCFA39411CA2CEA /* TrackIt */ = {
 			isa = PBXGroup;
 			children = (
-				D787D572204237650097DC76 /* LICENSE.txt */,
 				5368DC9319DC604D003019C8 /* README.md */,
-				D787D571204237640097DC76 /* README2.md */,
 				29B97315FDCFA39411CA2CEA /* Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
@@ -91,15 +101,22 @@
 		29B97315FDCFA39411CA2CEA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				D787D58F20423B3B0097DC76 /* Prefix.swift */,
-				D787D57F2042390F0097DC76 /* AppDelegate.swift */,
-				D787D581204239100097DC76 /* MyWindowController.swift */,
-				D787D5802042390F0097DC76 /* PrimaryViewController.swift */,
-				D787D582204239100097DC76 /* MySplitViewController.swift */,
+				5368DC9919DC6063003019C8 /* Prefix.pch */,
+				5368DC9619DC605B003019C8 /* main.m */,
+				5368DC9419DC605B003019C8 /* AppDelegate.h */,
+				5368DC9519DC605B003019C8 /* AppDelegate.m */,
+				5368DC9C19DC6077003019C8 /* MyWindowController.h */,
+				5368DC9D19DC6077003019C8 /* MyWindowController.m */,
+				5383D4561BA20A2D00014E51 /* PrimaryViewController.h */,
+				5383D4571BA20A2D00014E51 /* PrimaryViewController.m */,
+				5383D4591BA2152700014E51 /* MySplitViewController.h */,
+				5383D45A1BA2152700014E51 /* MySplitViewController.m */,
 				5334E6931BA227B300AB44BD /* Master */,
 				5334E6921BA2277C00AB44BD /* Detail */,
-				D787D58C204239650097DC76 /* ChildEditViewController.swift */,
-				D787D58B204239640097DC76 /* SeparatorView.swift */,
+				532BAD011BA37AC800565C88 /* ChildEditViewController.h */,
+				532BAD021BA37AC800565C88 /* ChildEditViewController.m */,
+				53E207371BA0C4AB00E45BA6 /* SeparatorView.h */,
+				53E207381BA0C4AB00E45BA6 /* SeparatorView.m */,
 				53663E181177C62800078216 /* Tree Support */,
 			);
 			name = Sources;
@@ -121,10 +138,14 @@
 		5334E6921BA2277C00AB44BD /* Detail */ = {
 			isa = PBXGroup;
 			children = (
-				D787D57A204238B10097DC76 /* IconViewBox.swift */,
-				D787D579204238B10097DC76 /* FileViewController.swift */,
-				D787D577204238B00097DC76 /* IconViewController.swift */,
-				D787D578204238B10097DC76 /* WebViewController.swift */,
+				53512FA91E7C735E006F6007 /* IconViewBox.h */,
+				53512FAA1E7C735E006F6007 /* IconViewBox.m */,
+				5383D44F1BA2016900014E51 /* FileViewController.h */,
+				5383D4501BA2016900014E51 /* FileViewController.m */,
+				5383D4511BA2016900014E51 /* IconViewController.h */,
+				5383D4521BA2016900014E51 /* IconViewController.m */,
+				534BC1021BA8AC3D00E3766A /* WebViewController.h */,
+				534BC1031BA8AC3D00E3766A /* WebViewController.m */,
 			);
 			name = Detail;
 			sourceTree = "<group>";
@@ -132,7 +153,8 @@
 		5334E6931BA227B300AB44BD /* Master */ = {
 			isa = PBXGroup;
 			children = (
-				D787D5752042381F0097DC76 /* MyOutlineViewController.swift */,
+				53E207341BA0BF8600E45BA6 /* MyOutlineViewController.h */,
+				53E207351BA0BF8600E45BA6 /* MyOutlineViewController.m */,
 			);
 			name = Master;
 			sourceTree = "<group>";
@@ -140,8 +162,10 @@
 		53663E181177C62800078216 /* Tree Support */ = {
 			isa = PBXGroup;
 			children = (
-				D787D5882042393F0097DC76 /* BaseNode.swift */,
-				D787D5872042393F0097DC76 /* ChildNode.swift */,
+				5368DCAC19DC609A003019C8 /* BaseNode.h */,
+				5368DCAD19DC609A003019C8 /* BaseNode.m */,
+				5368DCAE19DC609A003019C8 /* ChildNode.h */,
+				5368DCAF19DC609A003019C8 /* ChildNode.m */,
 			);
 			name = "Tree Support";
 			sourceTree = "<group>";
@@ -177,7 +201,6 @@
 				TargetAttributes = {
 					8D1107260486CEB800E47090 = {
 						DevelopmentTeam = V7M23Q5387;
-						LastSwiftMigration = 0920;
 					};
 				};
 			};
@@ -218,20 +241,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D787D58D204239660097DC76 /* SeparatorView.swift in Sources */,
-				D787D57D204238B20097DC76 /* FileViewController.swift in Sources */,
-				D787D5892042393F0097DC76 /* ChildNode.swift in Sources */,
-				D787D57E204238B20097DC76 /* IconViewBox.swift in Sources */,
-				D787D584204239100097DC76 /* PrimaryViewController.swift in Sources */,
-				D787D58E204239660097DC76 /* ChildEditViewController.swift in Sources */,
-				D787D585204239100097DC76 /* MyWindowController.swift in Sources */,
-				D787D583204239100097DC76 /* AppDelegate.swift in Sources */,
-				D787D5762042381F0097DC76 /* MyOutlineViewController.swift in Sources */,
-				D787D57B204238B20097DC76 /* IconViewController.swift in Sources */,
-				D787D57C204238B20097DC76 /* WebViewController.swift in Sources */,
-				D787D59020423B3C0097DC76 /* Prefix.swift in Sources */,
-				D787D58A2042393F0097DC76 /* BaseNode.swift in Sources */,
-				D787D586204239100097DC76 /* MySplitViewController.swift in Sources */,
+				5368DCB119DC609A003019C8 /* ChildNode.m in Sources */,
+				534BC1041BA8AC3D00E3766A /* WebViewController.m in Sources */,
+				53512FAB1E7C735E006F6007 /* IconViewBox.m in Sources */,
+				5383D4581BA20A2D00014E51 /* PrimaryViewController.m in Sources */,
+				5383D4551BA2016900014E51 /* IconViewController.m in Sources */,
+				53E207391BA0C4AB00E45BA6 /* SeparatorView.m in Sources */,
+				5383D4541BA2016900014E51 /* FileViewController.m in Sources */,
+				53E207361BA0BF8600E45BA6 /* MyOutlineViewController.m in Sources */,
+				532BAD031BA37AC800565C88 /* ChildEditViewController.m in Sources */,
+				5368DCB019DC609A003019C8 /* BaseNode.m in Sources */,
+				5368DC9819DC605B003019C8 /* main.m in Sources */,
+				5383D45B1BA2152700014E51 /* MySplitViewController.m in Sources */,
+				5368DC9719DC605B003019C8 /* AppDelegate.m in Sources */,
+				5368DC9F19DC6077003019C8 /* MyWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,12 +302,9 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = SourceView/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = SourceView;
 				SDKROOT = macosx;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -305,11 +325,9 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = SourceView/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = SourceView;
 				SDKROOT = macosx;
-				SWIFT_VERSION = 3.0;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

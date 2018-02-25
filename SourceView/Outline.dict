@@ -18,7 +18,7 @@
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>Mac OS X</string>
+					<string>macOS</string>
 					<key>url</key>
 					<string>http://www.apple.com/macosx/</string>
 				</dict>
@@ -40,12 +40,11 @@
 							<key>url</key>
 							<string>http://store.apple.com/</string>
 						</dict>
-						
 						<dict>
 							<key>name</key>
-							<string>Apple Hot News</string>
+							<string>Mac</string>
 							<key>url</key>
-							<string>http://www.apple.com/hotnews/</string>
+							<string>https://www.apple.com/mac/</string>
 						</dict>
 					</array>
 				</dict>
@@ -106,13 +105,13 @@
 					<key>name</key>
 					<string>iPhone Center</string>
 					<key>url</key>
-					<string>http://www.att.com/wireless/iphone/#fbid=4I9RoePfouA</string>
+					<string>http://www.att.com/wireless/iphone</string>
 				</dict>
 				<dict>
 					<key>name</key>
 					<string>AT&amp;T Retail</string>
 					<key>url</key>
-					<string>http://www.wireless.att.com/find-a-store/iphone/?_requestid=49535</string>
+					<string>https://www.att.com/maps/store-locator.html</string>
 				</dict>
 			</array>
 		</dict>
