@@ -46,7 +46,7 @@ class PrimaryViewController: NSViewController {
         super.viewDidLoad()
         
         // insert an empty menu item at the beginning of the drown down button's menu and add its image
-        let actionImage = NSImage(named: NSImageNameActionTemplate)!
+        let actionImage = NSImage(named: NSImage.actionTemplateName)!
         actionImage.size = NSMakeSize(10,10)
         
         let menuItem = NSMenuItem(title: "", action: nil, keyEquivalent: "")
@@ -73,7 +73,7 @@ class PrimaryViewController: NSViewController {
         //
         NotificationCenter.default.addObserver(self,
             selector: #selector(self.selectionDidChange(_:)),
-            name: .NSOutlineViewSelectionDidChange,
+            name: NSOutlineView.selectionDidChangeNotification,
             object: nil)
         
         // notification so we know when the icon view controller is done populating its content
@@ -87,7 +87,7 @@ class PrimaryViewController: NSViewController {
     //	dealloc
     // -------------------------------------------------------------------------------
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .NSOutlineViewSelectionDidChange, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSOutlineView.selectionDidChangeNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: Notification.Name(kReceivedContentNotification), object: nil)
     }
     
@@ -163,7 +163,7 @@ class PrimaryViewController: NSViewController {
         alert.addButton(withTitle: NSLocalizedString("OK", comment: ""))
         alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
         alert.beginSheetModal(for: self.view.window!) {returnCode in
-            if returnCode == NSAlertFirstButtonReturn {
+            if returnCode == NSApplication.ModalResponse.alertFirstButtonReturn {
                 // post notification to MyOutlineViewController to remove the selected folder
                 NotificationCenter.default.post(name: Notification.Name(kRemoveFolderNotification), object: nil)
             }

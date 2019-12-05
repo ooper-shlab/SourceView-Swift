@@ -64,7 +64,7 @@ class ChildEditViewController: NSViewController {
         ]
         self.clearValues()
         
-        self.view.window?.sheetParent?.endSheet(self.view.window!, returnCode: NSModalResponseOK)
+        self.view.window?.sheetParent?.endSheet(self.view.window!, returnCode: NSApplication.ModalResponse.OK)
     }
     
     // -------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ class ChildEditViewController: NSViewController {
     // -------------------------------------------------------------------------------
     @IBAction func cancel(_: AnyObject) {
         self.clearValues()
-        self.view.window?.sheetParent?.endSheet(self.view.window!, returnCode: NSModalResponseCancel)
+        self.view.window?.sheetParent?.endSheet(self.view.window!, returnCode: NSApplication.ModalResponse.cancel)
     }
     
     // -------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ class ChildEditViewController: NSViewController {
     //
     //  For this to be called, we need to be a delegate to both NSTextFields
     // -------------------------------------------------------------------------------
-    override func controlTextDidChange(_ obj: Notification) {
+    func controlTextDidChange(_ obj: Notification) {
         self.doneButton.isEnabled = self.doneAllowed
     }
     

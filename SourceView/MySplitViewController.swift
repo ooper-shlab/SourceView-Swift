@@ -70,7 +70,7 @@ class MySplitViewController: NSSplitViewController {
     //	hasChildViewController
     // -------------------------------------------------------------------------------
     private var hasChildViewController: Bool {
-        return !self.detailViewController.childViewControllers.isEmpty
+        return !self.detailViewController.children.isEmpty
     }
     
     // -------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ class MySplitViewController: NSSplitViewController {
         // to embed a new child view controller we have to add it and its view, then setup auto layout contraints
         //
         let currentDetailVC = self.detailViewController
-        currentDetailVC.addChildViewController(childViewController)
+        currentDetailVC.addChild(childViewController)
         currentDetailVC.view.addSubview(childViewController.view)
         
         let views = ["targetView" : childViewController.view]
@@ -112,11 +112,11 @@ class MySplitViewController: NSSplitViewController {
             
             // let the outline view controller handle the selection (helps us decide which detail view to use)
             if let vcForDetail = self.outlineViewController.viewControllerForSelection(treeController.selectedNodes) {
-                if self.hasChildViewController && currentDetailVC.childViewControllers[0] != vcForDetail {
+                if self.hasChildViewController && currentDetailVC.children[0] != vcForDetail {
                     // the incoming child view controller is different from the one we currently have,
                     // remove the old one and add the new one
                     //
-                    currentDetailVC.removeChildViewController(at: 0)
+                    currentDetailVC.removeChild(at: 0)
                     self.detailViewController.view.subviews[0].removeFromSuperview()
                     
                     self.embedChildViewController(vcForDetail)
@@ -129,7 +129,7 @@ class MySplitViewController: NSSplitViewController {
             } else {
                 // we don't have a child view controller to embed (no selection), so remove current child view controller
                 if self.hasChildViewController {
-                    currentDetailVC.removeChildViewController(at: 0)
+                    currentDetailVC.removeChild(at: 0)
                     self.detailViewController.view.subviews[0].removeFromSuperview()
                 }
             }

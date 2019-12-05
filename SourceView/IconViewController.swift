@@ -31,7 +31,7 @@ class IconViewController: NSViewController {
     // This view controller can be populated two ways:
     //    file system url, or from a BaseNode of internet shortcuts
     //
-    dynamic var url: URL?
+    @objc dynamic var url: URL?
     var baseNode: BaseNode? {
         didSet {didSetBaseNode(oldValue)}
     }
@@ -115,7 +115,7 @@ class IconViewController: NSViewController {
                     let fileURLs = try FileManager.default.contentsOfDirectory(at: urlToDirectory,
                                                                                includingPropertiesForKeys: [], options: [])
                     for element in fileURLs {
-                        let elementIcon = NSWorkspace.shared().icon(forFile: element.path)
+                        let elementIcon = NSWorkspace.shared.icon(forFile: element.path)
                         
                         // only allow visible objects
                         let resource = try element.resourceValues(forKeys: [.isHiddenKey, .localizedNameKey])

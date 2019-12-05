@@ -25,10 +25,10 @@ class SeparatorView: NSView {
         lineY += 0.5
         
         NSColor(deviceRed: 0.349, green: 0.6, blue: 0.898, alpha:0.6).set()
-        NSRectFill(NSMakeRect(dirtyRect.origin.x + lineX, dirtyRect.origin.y + lineY, lineWidth, 1))
-        
+        NSMakeRect(dirtyRect.origin.x + lineX, dirtyRect.origin.y + lineY, lineWidth, 1).fill()
+
         NSColor(deviceRed: 0.976, green: 1.0, blue: 1.0, alpha: 1.0).set()
-        NSRectFill(NSMakeRect(dirtyRect.origin.x + lineX, dirtyRect.origin.y + lineY + 1, lineWidth, 1))
+        NSMakeRect(dirtyRect.origin.x + lineX, dirtyRect.origin.y + lineY + 1, lineWidth, 1).fill()
     }
     
 }

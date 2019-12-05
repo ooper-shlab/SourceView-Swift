@@ -63,7 +63,7 @@ class FileViewController: NSViewController {
             self.fileName.stringValue = FileManager.default.displayName(atPath: path)
             
             // icon
-            let iconImage = NSWorkspace.shared().icon(forFile: path)
+            let iconImage = NSWorkspace.shared.icon(forFile: path)
             iconImage.size = NSMakeSize(64, 64)
             self.fileIcon.image = iconImage
             if let attr = try? FileManager.default.attributesOfItem(atPath: path) {

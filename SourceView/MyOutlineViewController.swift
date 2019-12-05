@@ -81,7 +81,7 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
     @IBOutlet private weak var placeHolderView: NSView!
     
     private var dragNodesArray: [NSTreeNode]?
-    dynamic var contents: [AnyObject] = []
+    @objc dynamic var contents: [AnyObject] = []
     
     private var iconViewController: IconViewController!
     private var fileViewController: FileViewController!
@@ -96,19 +96,19 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
         super.viewDidLoad()
         
         // load the icon view controller for later use
-        iconViewController = self.storyboard!.instantiateController(withIdentifier: ICONVIEW_IDENTIFIER) as! IconViewController
+        iconViewController = self.storyboard!.instantiateController(withIdentifier: ICONVIEW_IDENTIFIER) as? IconViewController
         self.iconViewController.view.translatesAutoresizingMaskIntoConstraints = false
         
         // load the file view controller for later use
-        fileViewController = self.storyboard!.instantiateController(withIdentifier: FILEVIEW_IDENTIFIER) as! FileViewController
+        fileViewController = self.storyboard!.instantiateController(withIdentifier: FILEVIEW_IDENTIFIER) as? FileViewController
         self.fileViewController.view.translatesAutoresizingMaskIntoConstraints = false
         
         // load the web view controller for later use
-        webViewController = self.storyboard!.instantiateController(withIdentifier: WEBVIEW_IDENTIFIER) as! WebViewController
+        webViewController = self.storyboard!.instantiateController(withIdentifier: WEBVIEW_IDENTIFIER) as? WebViewController
         self.webViewController.view.translatesAutoresizingMaskIntoConstraints = false
         
         // load the child edit view controller for later use
-        childEditWindowController = self.storyboard!.instantiateController(withIdentifier: CHILDEDIT_IDENTIFIER) as! NSWindowController
+        childEditWindowController = self.storyboard!.instantiateController(withIdentifier: CHILDEDIT_IDENTIFIER) as? NSWindowController
         
         self.populateOutlineContents()
         
@@ -120,10 +120,11 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
         self.myOutlineView.selectionHighlightStyle = .sourceList
         
         // drag and drop support
-        self.myOutlineView.register(forDraggedTypes: [kNodesPBoardType,		// our internal drag type
-            NSURLPboardType,			// single url from pasteboard
-            NSFilenamesPboardType,		// from Safari or Finder
-            NSFilesPromisePboardType])
+        self.myOutlineView.registerForDraggedTypes([
+            NSPasteboard.PasteboardType(rawValue: kNodesPBoardType), // our internal drag type
+            .URL,			// single url from pasteboard
+            .fileURL,		// from Safari or Finder
+            .filePromise])
         
         // notification to add a folder
         NotificationCenter.default.addObserver(self,
@@ -399,7 +400,7 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
         childEditViewController.savedValues = [kName_Key: BaseNode.untitledName as AnyObject, kURL_Key: HTTP_PREFIX as AnyObject]
         
         self.view.window?.beginSheet(self.childEditWindowController.window!) {returnCode in
-            if returnCode == NSModalResponseOK {
+            if returnCode == NSApplication.ModalResponse.OK {
                 let name: String
                 if let itemStr = childEditViewController.savedValues[kName_Key] as! String?, !itemStr.isEmpty {
                     name = itemStr
@@ -432,7 +433,7 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
         } else {
             childEditViewController.savedValues = [kName_Key : node.nodeTitle as AnyObject, kURL_Key : node.url!]
             self.view.window?.beginSheet(self.childEditWindowController.window!) {returnCode in
-                if returnCode == NSModalResponseOK {
+                if returnCode == NSApplication.ModalResponse.OK {
                     // create a child node
                     let childNode = ChildNode(leaf: ())
                     childNode.url = childEditViewController.savedValues[kURL_Key] as! URL?
@@ -511,18 +512,18 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
     //	viewForTableColumn:tableColumn:item
     // -------------------------------------------------------------------------------
     func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
-        var result = outlineView.make(withIdentifier: tableColumn?.identifier ?? "", owner: self)
+        var result = outlineView.makeView(withIdentifier: tableColumn?.identifier ?? NSUserInterfaceItemIdentifier(rawValue: ""), owner: self)
         
         if let node = (item as! NSTreeNode).representedObject as? BaseNode {
             if self.outlineView(outlineView, isGroupItem: item) {    // is it a special group (not a folder)?
                 // Group items are sections of our outline that can be hidden/shown (i.e. PLACES/BOOKMARKS).
                 let identifier = outlineView.tableColumns[0].identifier
-                result = outlineView.make(withIdentifier: identifier, owner: self) as! NSTableCellView?
+                result = outlineView.makeView(withIdentifier: identifier, owner: self) as! NSTableCellView?
                 let value = node.nodeTitle.uppercased()
                 (result as! NSTableCellView).textField!.stringValue = value
             } else if node.isSeparator {
                 // Separators have no title or icon, just use the custom view to draw it.
-                result = outlineView.make(withIdentifier: "Separator", owner: self)
+                result = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "Separator"), owner: self)
             } else {
                 (result as! NSTableCellView).textField!.stringValue = node.nodeTitle
                 (result as! NSTableCellView).imageView!.image = node.nodeIcon
@@ -548,7 +549,7 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
     // -------------------------------------------------------------------------------
     func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
         // don't allow empty node names
-        return !(fieldEditor.string?.isEmpty ?? true)
+        return !(fieldEditor.string.isEmpty)
     }
     
     // ----------------------------------------------------------------------------------------
@@ -568,7 +569,7 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
     // outlineView:writeItems:toPasteboard
     // ----------------------------------------------------------------------------------------
     func outlineView(_ ov: NSOutlineView, writeItems items: [Any], to pboard: NSPasteboard) -> Bool {
-        pboard.declareTypes([kNodesPBoardType], owner: self)
+        pboard.declareTypes([NSPasteboard.PasteboardType(rawValue: kNodesPBoardType)], owner: self)
         
         // keep track of this nodes for drag feedback in "validateDrop"
         self.dragNodesArray = items as? [NSTreeNode]
@@ -626,7 +627,7 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
     //	The user is dragging URLs from Safari.
     // -------------------------------------------------------------------------------
     private func handleWebURLDrops(_ pboard: NSPasteboard, withIndexPath indexPath: IndexPath) {
-        let pbArray = pboard.propertyList(forType: "WebURLsWithTitlesPboardType") as! [[String]]
+        let pbArray = pboard.propertyList(forType: NSPasteboard.PasteboardType(rawValue: "WebURLsWithTitlesPboardType")) as! [[String]]
         let urlArray = pbArray[0]
         let nameArray = pbArray[1]
         
@@ -668,7 +669,7 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
     //	The user is dragging file-system based objects (probably from Finder)
     // -------------------------------------------------------------------------------
     private func handleFileBasedDrops(_ pboard: NSPasteboard, withIndexPath indexPath: IndexPath) {
-        guard let fileNames = pboard.propertyList(forType: NSFilenamesPboardType) as? [String], !fileNames.isEmpty else {return}
+        guard let fileNames = pboard.propertyList(forType: NSPasteboard.PasteboardType.fileURL) as? [String], !fileNames.isEmpty else {return}
         
         for fileName in fileNames.lazy.reversed() {
             let node = ChildNode()
@@ -707,7 +708,7 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
                     // use the url portion without the prefix
                     let prefixRange = url.absoluteString.range(of: HTTP_PREFIX)!
                     let newRange = prefixRange.upperBound..<url.absoluteString.index(before: url.absoluteString.endIndex)
-                    node.nodeTitle = url.absoluteString.substring(with: newRange)
+                    node.nodeTitle = String(url.absoluteString[newRange])
                 } else {
                     // prefix unknown, just use the url as its title
                     node.nodeTitle = url.absoluteString
@@ -752,22 +753,22 @@ class MyOutlineViewController: NSViewController, NSOutlineViewDelegate, NSOutlin
             }
         }
         
-        let pboard = info.draggingPasteboard()	// get the pasteboard
+        let pboard = info.draggingPasteboard	// get the pasteboard
         
         // check the dragging type -
-        if pboard.availableType(from: [kNodesPBoardType]) != nil {
+        if pboard.availableType(from: [NSPasteboard.PasteboardType(rawValue: kNodesPBoardType)]) != nil {
             // user is doing an intra-app drag within the outline view
             self.handleInternalDrops(pboard, withIndexPath: indexPath)
             result = true
-        } else if pboard.availableType(from: ["WebURLsWithTitlesPboardType"]) != nil {
+        } else if pboard.availableType(from: [NSPasteboard.PasteboardType(rawValue: "WebURLsWithTitlesPboardType")]) != nil {
             // the user is dragging URLs from Safari
             self.handleWebURLDrops(pboard, withIndexPath: indexPath)
             result = true
-        } else if pboard.availableType(from: [NSFilenamesPboardType]) != nil {
+        } else if pboard.availableType(from: [NSPasteboard.PasteboardType.fileURL]) != nil {
             // the user is dragging file-system based objects (probably from Finder)
             self.handleFileBasedDrops(pboard, withIndexPath: indexPath)
             result = true
-        } else if pboard.availableType(from: [NSURLPboardType]) != nil {
+        } else if pboard.availableType(from: [NSPasteboard.PasteboardType.fileURL]) != nil {
             // handle dropping a raw URL
             self.handleURLBasedDrops(pboard, withIndexPath: indexPath)
             result = true

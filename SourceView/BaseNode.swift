@@ -25,11 +25,11 @@ private let BOOKMARKS_NAME = "BOOKMARKS"
 @objc(BaseNode)
 class BaseNode: NSObject, NSCoding, NSCopying {
     
-    dynamic var nodeTitle: String
+    @objc dynamic var nodeTitle: String
     //dynamic var nodeIcon: NSImage?
     private var _children: [BaseNode] = []
-    dynamic var url: URL?
-    dynamic var isLeaf: Bool = false	// is container by default
+    @objc dynamic var url: URL?
+    @objc dynamic var isLeaf: Bool = false	// is container by default
     private var _isBookmark: Bool = false
     private var _isDirectory: Bool = false
     
@@ -71,7 +71,7 @@ class BaseNode: NSObject, NSCoding, NSCopying {
         self.isLeaf = flag
     }
     
-    dynamic var children: [BaseNode] {
+    @objc dynamic var children: [BaseNode] {
         get {
             if self.isLeaf {
                 return [self]
@@ -159,12 +159,12 @@ class BaseNode: NSObject, NSCoding, NSCopying {
             if let url = self.url {
                 if self.isLeaf {
                     if self.isBookmark {
-                        icon = NSWorkspace.shared().icon(forFileType: NSFileTypeForHFSTypeCode(OSType(kGenericURLIcon)))
+                        icon = NSWorkspace.shared.icon(forFileType: NSFileTypeForHFSTypeCode(OSType(kGenericURLIcon)))
                     } else {
-                        icon = NSWorkspace.shared().icon(forFile: url.path)
+                        icon = NSWorkspace.shared.icon(forFile: url.path)
                     }
                 } else {
-                    icon = NSWorkspace.shared().icon(forFile: url.path)
+                    icon = NSWorkspace.shared.icon(forFile: url.path)
                 }
             } else {
                 // it's a separator, don't bother with the icon
@@ -172,7 +172,7 @@ class BaseNode: NSObject, NSCoding, NSCopying {
             icon?.size = NSMakeSize(kIconSmallImageSize, kIconSmallImageSize)
         } else if !self.isSpecialGroup {
             // it's a folder, use the folderImage as its icon
-            icon = NSWorkspace.shared().icon(forFileType: NSFileTypeForHFSTypeCode(OSType(kGenericFolderIcon)))
+            icon = NSWorkspace.shared.icon(forFileType: NSFileTypeForHFSTypeCode(OSType(kGenericFolderIcon)))
             icon!.size = NSMakeSize(kIconSmallImageSize, kIconSmallImageSize)
         }
     
